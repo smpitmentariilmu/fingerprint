@@ -124,6 +124,10 @@
         .modal-container { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
         .modal-container.hidden { display: none; }
         
+        /* Password Toggle Eye Icon */
+        .password-toggle { cursor: pointer; color: theme('colors.mi.text2'); transition: color 0.2s; }
+        .password-toggle:hover { color: theme('colors.mi.deep'); }
+
         /* Admin Sidebar Transition */
         #admin-sidebar { transition: all 0.3s ease-in-out; }
         .sidebar-collapsed { width: 4.5rem !important; }
@@ -136,7 +140,7 @@
     <!-- ========================================== -->
     <!-- VIEW: PUBLIC DASHBOARD                     -->
     <!-- ========================================== -->
-    <div id="view-public" class="flex flex-col h-full overflow-y-auto pb-24 lg:pb-0 relative w-full">
+    <div id="view-public" class="flex flex-col h-full overflow-y-auto relative w-full">
         
         <header class="bg-mi-surface border-b border-mi-border sticky top-0 z-30 shadow-sm shrink-0">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
@@ -166,7 +170,7 @@
                             <i class="fa-solid fa-share-nodes"></i> <span>Bagikan Laporan</span>
                         </button>
                         <!-- Login / Dashboard Toggle -->
-                        <button id="btn-login-toggle" onclick="handleLoginDashboardToggle()" class="hidden flex-1 sm:flex-none justify-center px-3 py-1.5 md:py-2 bg-mi-text1 hover:bg-gray-800 text-white rounded-xl text-xs md:text-sm font-semibold transition-colors shadow-md items-center gap-1.5 lg:ml-2">
+                        <button id="btn-login-toggle" onclick="handleLoginDashboardToggle()" class="hidden lg:flex flex-1 sm:flex-none justify-center px-3 py-1.5 md:py-2 bg-mi-text1 hover:bg-gray-800 text-white rounded-xl text-xs md:text-sm font-semibold transition-colors shadow-md items-center gap-1.5 lg:ml-2">
                             <i class="fa-solid fa-right-to-bracket" id="icon-login-toggle"></i> <span id="text-login-toggle">Login Admin</span>
                         </button>
                     </div>
@@ -344,9 +348,10 @@
 
                 <!-- TAB 2: REKAP -->
                 <div id="content-rekap" class="hidden flex-col min-h-[400px]">
-                    <div class="p-4 bg-white border-b border-mi-border flex gap-2">
+                    <div class="p-4 bg-white border-b border-mi-border flex flex-wrap gap-2">
                         <button onclick="setRekapMode('kelas')" id="btn-rekap-kelas" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-mi-deep text-white shadow-sm">Rekap Berdasarkan Kelas</button>
                         <button onclick="setRekapMode('tanggal')" id="btn-rekap-tanggal" class="px-4 py-1.5 rounded-lg text-xs font-medium transition-all bg-mi-mint text-mi-deep hover:bg-mi-deep hover:text-white">Rekap Berdasarkan Tanggal</button>
+                        <button onclick="setRekapMode('siswa')" id="btn-rekap-siswa" class="px-4 py-1.5 rounded-lg text-xs font-medium transition-all bg-mi-mint text-mi-deep hover:bg-mi-deep hover:text-white">Rekap Berdasarkan Siswa</button>
                     </div>
                     <div class="overflow-x-auto flex-grow">
                         <table class="min-w-full divide-y divide-mi-border" id="table-rekap">
@@ -439,10 +444,14 @@
                             <div class="relative h-60 w-full"><canvas id="chartTopSiswa"></canvas></div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 gap-4 md:gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                         <div class="bg-white border border-mi-border rounded-2xl p-4 shadow-sm">
                             <h3 class="text-xs font-bold text-mi-text1 uppercase tracking-wide mb-4 text-center">Belum Fingerprint Berdasarkan Kelompok Tahsin</h3>
                             <div class="relative h-60 w-full"><canvas id="chartTahsin"></canvas></div>
+                        </div>
+                        <div class="bg-white border border-mi-border rounded-2xl p-4 shadow-sm">
+                            <h3 class="text-xs font-bold text-mi-text1 uppercase tracking-wide mb-4 text-center">Berdasarkan Jenis Kelamin</h3>
+                            <div class="relative h-60 w-full"><canvas id="chartGender"></canvas></div>
                         </div>
                     </div>
                 </div>
@@ -1095,15 +1104,15 @@
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-gray-500 mb-1 uppercase tracking-wide">Password</label>
-                    <div class="relative">
+                    <div class="relative flex items-center">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fa-solid fa-lock text-gray-400 text-sm"></i></div>
                         <input type="password" id="loginPassword" placeholder="••••••••" class="w-full pl-9 pr-10 border border-gray-300 rounded-xl bg-gray-50 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-mi-mint focus:border-mi-deep transition-colors" onkeydown="if(event.key==='Enter') handleLogin()">
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onclick="togglePasswordView()">
-                            <i id="loginPasswordIcon" class="fa-solid fa-eye text-gray-400 text-sm hover:text-mi-deep transition-colors"></i>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <i class="fa-regular fa-eye password-toggle text-sm" id="toggleLoginPassword" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPassword')"></i>
                         </div>
                     </div>
                 </div>
-                <button id="btnLoginSubmit" onclick="handleLogin()" class="w-full flex items-center justify-center gap-2 py-2.5 bg-mi-deep hover:bg-mi-emerald text-white rounded-xl text-sm font-bold transition-colors shadow-md mt-2">
+                <button onclick="handleLogin()" class="w-full flex items-center justify-center gap-2 py-2.5 bg-mi-deep hover:bg-mi-emerald text-white rounded-xl text-sm font-bold transition-colors shadow-md mt-2">
                     <i class="fa-solid fa-right-to-bracket"></i> Masuk
                 </button>
             </div>
@@ -1310,131 +1319,123 @@
     </div>
 
     <!-- MODAL: ADMIN ADD SISWA -->
-    <div id="modalAdmSiswa" class="modal-container hidden" style="z-index: 120;">
+    <div id="modalAdmSiswa" class="modal-container hidden z-[120]">
         <div class="absolute inset-0 modal-overlay" onclick="closeModal('modalAdmSiswa')"></div>
-        <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-5xl relative z-10 overflow-hidden flex flex-col max-h-[95vh]">
-            <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-mi-deep text-white shrink-0">
+        <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-4xl relative z-10 flex flex-col max-h-[90vh]">
+            <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-mi-deep text-white shrink-0 rounded-t-2xl">
                 <h3 class="text-sm font-bold" id="title-modal-siswa"><i class="fa-solid fa-user-plus mr-2"></i> Tambah Siswa Baru</h3>
                 <button onclick="closeModal('modalAdmSiswa')" class="text-white/70 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="p-5 overflow-y-auto bg-gray-50 flex-grow">
-                <input type="hidden" id="adm-form-mode">
-                <input type="hidden" id="adm-form-old-nis">
+                <input type="hidden" id="siswa-form-mode">
+                <input type="hidden" id="siswa-form-old-nis">
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Identitas Utama -->
+                    <div class="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-2">
+                        <h4 class="text-[10px] font-bold text-mi-deep uppercase border-b border-gray-100 pb-2 mb-3">Identitas Utama</h4>
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">SiswaID</label><input type="text" id="adm-form-siswaid" class="siswa-field w-full border border-gray-300 rounded bg-gray-100 px-2 py-1.5 text-xs font-mono" readonly></div>
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">NISN</label><input type="text" id="adm-form-nisn" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">NIPD</label><input type="text" id="adm-form-nipd" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">NIK</label><input type="text" id="adm-form-nik" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                        </div>
+                    </div>
+
                     <!-- Data Pribadi -->
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                        <h4 class="text-xs font-bold text-mi-deep uppercase border-b border-gray-100 pb-2 mb-3">Data Pribadi</h4>
-                        <div class="space-y-3">
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">SiswaID</label><input type="text" id="adm-form-siswaid" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">NISN</label><input type="text" id="adm-form-nisn" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">NIPD</label><input type="text" id="adm-form-nipd" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">NIK</label><input type="text" id="adm-form-nik" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Nama Lengkap</label><input type="text" id="adm-form-nama" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Nama Panggilan</label><input type="text" id="adm-form-panggilan" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Jenis Kelamin</label>
-                                <select id="adm-form-jk" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep">
-                                    <option value="L">Laki-laki</option>
-                                    <option value="P">Perempuan</option>
-                                </select>
+                    <div class="col-span-1 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                        <h4 class="text-[10px] font-bold text-mi-deep uppercase border-b border-gray-100 pb-2 mb-3">Data Pribadi</h4>
+                        <div class="space-y-2">
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Nama Lengkap</label><input type="text" id="adm-form-nama" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Nama Panggilan</label><input type="text" id="adm-form-panggilan" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Jenis Kelamin</label>
+                                <select id="adm-form-jk" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Tempat Lahir</label><input type="text" id="adm-form-tplahir" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Tanggal Lahir</label><input type="date" id="adm-form-tglahir" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Tempat Lahir</label><input type="text" id="adm-form-tplahir" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Tanggal Lahir</label><input type="date" id="adm-form-tglahir" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                            </div>
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Kelas (ClassID)</label><select id="adm-form-kelas" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></select></div>
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Kelompok Tahsin</label><select id="adm-form-tahsin" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></select></div>
+                        </div>
+                    </div>
+
+                    <!-- Data Alamat -->
+                    <div class="col-span-1 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                        <h4 class="text-[10px] font-bold text-mi-deep uppercase border-b border-gray-100 pb-2 mb-3">Data Alamat</h4>
+                        <div class="space-y-2">
+                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Alamat Lengkap</label><textarea id="adm-form-alamat" rows="2" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none resize-none"></textarea></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">RT</label><input type="text" id="adm-form-rt" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">RW</label><input type="text" id="adm-form-rw" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Desa/Kel.</label><input type="text" id="adm-form-desa" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Kecamatan</label><input type="text" id="adm-form-kec" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Kab. / Kota</label><input type="text" id="adm-form-kab" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Provinsi</label><input type="text" id="adm-form-prov" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Kode Pos</label><input type="text" id="adm-form-kodepos" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">No HP Siswa</label><input type="text" id="adm-form-hpsiswa" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Alamat -->
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                        <h4 class="text-xs font-bold text-mi-deep uppercase border-b border-gray-100 pb-2 mb-3">Alamat</h4>
-                        <div class="space-y-3">
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Alamat</label><textarea id="adm-form-alamat" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></textarea></div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">RT</label><input type="text" id="adm-form-rt" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">RW</label><input type="text" id="adm-form-rw" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
+                    <!-- Data Orang Tua & Akun -->
+                    <div class="col-span-1 bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-4">
+                        <div>
+                            <h4 class="text-[10px] font-bold text-mi-deep uppercase border-b border-gray-100 pb-2 mb-3">Data Orang Tua</h4>
+                            <div class="space-y-2">
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="col-span-2"><label class="block text-[10px] font-bold text-gray-500 mb-1">Nama Ayah</label><input type="text" id="adm-form-namaayah" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Status Ayah</label><select id="adm-form-statusayah" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs"><option value="Masih Hidup">Masih Hidup</option><option value="Meninggal">Meninggal</option></select></div>
+                                </div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">No HP Ayah</label><input type="text" id="adm-form-hpayah" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div class="col-span-2"><label class="block text-[10px] font-bold text-gray-500 mb-1">Nama Ibu</label><input type="text" id="adm-form-namaibu" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Status Ibu</label><select id="adm-form-statusibu" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs"><option value="Masih Hidup">Masih Hidup</option><option value="Meninggal">Meninggal</option></select></div>
+                                </div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">No HP Ibu</label><input type="text" id="adm-form-hpibu" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
                             </div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Desa/Kel.</label><input type="text" id="adm-form-desa" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Kecamatan</label><input type="text" id="adm-form-kec" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Kab. / Kota</label><input type="text" id="adm-form-kab" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Provinsi</label><input type="text" id="adm-form-prov" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Kode Pos</label><input type="text" id="adm-form-pos" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
                         </div>
-                    </div>
 
-                    <!-- Orang Tua & Sekolah -->
-                    <div class="flex flex-col gap-6">
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                            <h4 class="text-xs font-bold text-mi-deep uppercase border-b border-gray-100 pb-2 mb-3">Orang Tua & Kontak</h4>
-                            <div class="space-y-3">
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">No Hp Siswa</label><input type="text" id="adm-form-hpsiswa" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Nama Ayah</label><input type="text" id="adm-form-ayah" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Status Ayah</label><input type="text" id="adm-form-statusayah" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                                </div>
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">No Hp Ayah</label><input type="text" id="adm-form-hpayah" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Nama Ibu</label><input type="text" id="adm-form-ibu" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Status Ibu</label><input type="text" id="adm-form-statusibu" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                                </div>
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">No Hp Ibu</label><input type="text" id="adm-form-hpibu" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                            <h4 class="text-xs font-bold text-mi-deep uppercase border-b border-gray-100 pb-2 mb-3">Akun & Sekolah</h4>
-                            <div class="space-y-3">
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">ClassID (Kelas)</label><select id="adm-form-kelas" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></select></div>
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Kelompok Tahsin</label><select id="adm-form-tahsin" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></select></div>
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Status Belajar ID</label>
-                                    <select id="adm-form-statusbelajar" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep">
-                                        <option value="Aktif">Aktif</option>
-                                        <option value="Belum Aktif">Belum Aktif</option>
-                                    </select>
-                                </div>
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Username Belajar ID</label><input type="text" id="adm-form-userbelajar" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
-                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Password Belajar ID</label><input type="text" id="adm-form-passbelajar" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep"></div>
+                        <div>
+                            <h4 class="text-[10px] font-bold text-accent-blueTxt uppercase border-b border-gray-100 pb-2 mb-3">Akun Belajar ID</h4>
+                            <div class="space-y-2">
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Status Belajar ID</label><select id="adm-form-statusbelajar" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs"><option value="Aktif">Aktif</option><option value="Tidak Aktif">Tidak Aktif</option><option value="Belum Ada">Belum Ada</option></select></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Username Belajar ID</label><input type="text" id="adm-form-userbelajar" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
+                                <div><label class="block text-[10px] font-bold text-gray-500 mb-1">Password Belajar ID</label><input type="text" id="adm-form-passbelajar" class="siswa-field w-full border border-gray-300 rounded px-2 py-1.5 text-xs focus:border-mi-deep outline-none"></div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
-            <div class="p-4 border-t border-gray-100 bg-white shrink-0 flex justify-end gap-2">
-                <button onclick="closeModal('modalAdmSiswa')" class="px-5 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors">Batal</button>
-                <button onclick="adminSaveSiswa()" class="px-5 py-2.5 bg-mi-deep text-white font-bold rounded-xl hover:bg-mi-emerald transition-colors">Simpan Data Siswa</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- MODAL: ADMIN DETAIL SISWA INFO -->
-    <div id="modalAdmSiswaDetailInfo" class="modal-container hidden" style="z-index: 120;">
-        <div class="absolute inset-0 modal-overlay" onclick="closeModal('modalAdmSiswaDetailInfo')"></div>
-        <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-4xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-mi-mint text-mi-deep shrink-0">
-                <h3 class="text-sm font-bold"><i class="fa-regular fa-id-card mr-2"></i> Detail Data Siswa</h3>
-                <button onclick="closeModal('modalAdmSiswaDetailInfo')" class="text-mi-deep/70 hover:text-mi-deep"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="p-5 overflow-y-auto bg-white flex-grow">
-                <div id="content-siswa-detail" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
-                </div>
+            <div class="p-4 border-t border-gray-100 bg-white shrink-0 flex justify-end gap-2 rounded-b-2xl">
+                <button onclick="closeModal('modalAdmSiswa')" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-bold hover:bg-gray-200 transition-colors">Tutup</button>
+                <button onclick="adminSaveSiswa()" id="btn-save-siswa" class="px-6 py-2 bg-mi-deep text-white font-bold rounded-lg hover:bg-mi-emerald transition-colors">Simpan Data Siswa</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: ADMIN KELAS -->
-    <div id="modalAdmKelas" class="modal-container hidden" style="z-index: 120;">
+    <div id="modalAdmKelas" class="modal-container hidden z-[120]">
         <div class="absolute inset-0 modal-overlay" onclick="closeModal('modalAdmKelas')"></div>
         <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-sm relative z-10 overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-mi-deep text-white">
-                <h3 class="text-sm font-bold" id="title-modal-kelas"><i class="fa-solid fa-school mr-2"></i> Tambah Kelas</h3>
+                <h3 class="text-sm font-bold" id="title-modal-kelas"><i class="fa-solid fa-plus mr-2"></i> Tambah Kelas</h3>
                 <button onclick="closeModal('modalAdmKelas')" class="text-white/70 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="p-5 space-y-4 bg-white">
-                <input type="hidden" id="form-kelas-mode">
-                <input type="hidden" id="form-kelas-old">
+                <input type="hidden" id="kelas-form-mode">
+                <input type="hidden" id="kelas-form-old">
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-500 mb-1 uppercase">Nama Kelas</label>
-                    <input type="text" id="form-kelas-nama" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep">
+                    <label class="block text-[11px] font-bold text-gray-500 mb-1 uppercase">Nama Kelas Lengkap</label>
+                    <input type="text" id="kelas-form-nama" placeholder="Contoh: 7 Ar Rumaysha" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep">
+                    <p class="text-[10px] text-gray-400 mt-1">Gunakan angka tingkat di awal (misal: 7, 8, 9) untuk mempermudah filter rekap.</p>
                 </div>
                 <button onclick="adminSaveKelas()" class="w-full bg-mi-deep text-white font-bold py-2.5 rounded-lg hover:bg-mi-emerald transition-colors mt-2">Simpan Kelas</button>
             </div>
@@ -1674,7 +1675,7 @@
             users: []
         };
 
-        let chartInstances = { tren: null, pieFP: null, kelas: null, topSiswa: null, tahsin: null, admTren: null, admPie: null, admKelas: null };
+        let chartInstances = { tren: null, pieFP: null, kelas: null, topSiswa: null, tahsin: null, gender: null, admTren: null, admPie: null, admKelas: null };
 
         // ==========================================
         // 3. DATA INITIALIZATION & DUMMY GENERATOR
@@ -1694,11 +1695,7 @@
                 db.bfp = JSON.parse(lsBfp);
                 db.users = JSON.parse(lsUsers);
                 db.kelompokTahsin = JSON.parse(lsTahsin);
-                if (lsClasses) {
-                    db.classes = JSON.parse(lsClasses);
-                    CLASS_LIST.length = 0;
-                    db.classes.forEach(c => CLASS_LIST.push(c));
-                }
+                if(lsClasses) db.classes = JSON.parse(lsClasses);
             } else {
                 generateDummyData();
             }
@@ -1710,6 +1707,7 @@
             db.students = [];
             db.bfp = [];
             db.kelompokTahsin = [];
+            db.classes = [...CLASS_LIST];
             db.users = [
                 {username: 'admin', password: 'admin123', name: 'Super Admin', role: 'Admin', status: 'Aktif'},
                 {username: 'gtk', password: 'gtk123', name: 'Guru Mentari Ilmu', role: 'GTK', status: 'Aktif'}
@@ -1730,44 +1728,33 @@
             }
 
             let nisCounter = 1;
-            // Generate EXACTLY 302 Students
+            // Generate EXACTLY 302 Students with detailed fields
             const classCounts = [26, 25, 25, 25, 25, 25, 25, 25, 26, 25, 25, 25];
-            CLASS_LIST.forEach((c, idx) => {
+            db.classes.forEach((c, idx) => {
                 let grade = c.charAt(0);
-                let count = classCounts[idx];
+                let count = classCounts[idx] || 25;
                 for(let i=1; i<=count; i++) {
                     let randomTahsin = db.kelompokTahsin[Math.floor(Math.random() * db.kelompokTahsin.length)].id;
                     db.students.push({
-                        siswaId: `S${String(nisCounter).padStart(5, '0')}`,
-                        nisn: `00${String(nisCounter).padStart(8, '0')}`,
-                        nipd: `${grade}00${String(nisCounter).padStart(3, '0')}`,
-                        nis: `${grade}00${String(nisCounter).padStart(3, '0')}`, // NIPD acts as nis internally
-                        nik: `321500${String(nisCounter).padStart(10, '0')}`,
-                        nama: `Siswa Dummy ${c.split(' ')[1]} ${i}`,
-                        namaPanggilan: `Dummy ${i}`,
-                        jk: Math.random() > 0.5 ? 'L' : 'P',
+                        siswaId: `SID-${grade}00${String(nisCounter).padStart(3, '0')}`,
+                        nis: `${grade}00${String(nisCounter).padStart(3, '0')}`,
+                        nisn: `00${grade}${String(nisCounter).padStart(6, '0')}`,
+                        nipd: `NIPD${nisCounter}`,
+                        nik: `3201${String(Math.floor(Math.random()*100000000000)).padStart(12, '0')}`,
+                        nama: `Siswa Dummy ${c.split(' ')[1] || c} ${i}`,
+                        panggilan: `Siswa ${i}`,
+                        jk: Math.random() > 0.5 ? 'Laki-laki' : 'Perempuan',
                         tempatLahir: 'Karawang',
-                        tanggalLahir: '2010-01-01',
+                        tanggalLahir: `201${Math.floor(Math.random()*4)}-0${Math.floor(Math.random()*9)+1}-1${Math.floor(Math.random()*9)}`,
                         kelas: c,
-                        alamat: 'Jl. Raya Pendidikan No. 1',
-                        rt: '01',
-                        rw: '02',
-                        desa: 'Karawang Barat',
-                        kecamatan: 'Karawang',
-                        kabupaten: 'Karawang',
-                        provinsi: 'Jawa Barat',
-                        kodePos: '41311',
-                        hpSiswa: '081200000000',
-                        namaAyah: 'Bapak Dummy',
-                        statusAyah: 'Masih Hidup',
-                        hpAyah: '081200000001',
-                        namaIbu: 'Ibu Dummy',
-                        statusIbu: 'Masih Hidup',
-                        hpIbu: '081200000002',
-                        statusBelajar: 'Aktif',
-                        usernameBelajar: `siswa${nisCounter}@belajar.id`,
-                        passwordBelajar: `pass${nisCounter}`,
-                        kelompokTahsinId: randomTahsin
+                        kelompokTahsinId: randomTahsin,
+                        alamat: 'Jl. Mentari Ilmu No. 1',
+                        rt: '01', rw: '02',
+                        desa: 'Karawang Wetan', kec: 'Karawang Timur', kab: 'Karawang', prov: 'Jawa Barat',
+                        kodePos: '41314', hpSiswa: '08123456789',
+                        namaAyah: 'Ayah Dummy', statusAyah: 'Masih Hidup', hpAyah: '08123456780',
+                        namaIbu: 'Ibu Dummy', statusIbu: 'Masih Hidup', hpIbu: '08123456781',
+                        statusBelajar: 'Aktif', userBelajar: `siswa${nisCounter}@belajar.id`, passBelajar: 'password123'
                     });
                     nisCounter++;
                 }
@@ -1830,6 +1817,7 @@
                     localStorage.removeItem('mi_bfp');
                     localStorage.removeItem('mi_users');
                     localStorage.removeItem('mi_tahsin');
+                    localStorage.removeItem('mi_classes');
                     initData();
                     if(appState.currentView === 'public') {
                         applyFilters();
@@ -1851,7 +1839,7 @@
             const admFKPilih = document.getElementById('adm-filter-kelas-pilih-siswa');
             
             let opts = '';
-            CLASS_LIST.forEach(c => opts += `<option value="${c}">${c}</option>`);
+            db.classes.forEach(c => opts += `<option value="${c}">${c}</option>`);
             
             let allOpt = '<option value="all">Semua Kelas</option>';
             fKelas.innerHTML = allOpt + opts;
@@ -1860,7 +1848,7 @@
             admRepK.innerHTML = allOpt + opts;
             if(admFKAnggota) admFKAnggota.innerHTML = allOpt + opts;
             if(admFKPilih) admFKPilih.innerHTML = allOpt + opts;
-            admFormK.innerHTML = opts;
+            if(admFormK) admFormK.innerHTML = opts;
 
             // Tahsin Dropdowns
             const fTahsin = document.getElementById('filterTahsin');
@@ -1873,7 +1861,7 @@
             let allTOpt = '<option value="all">Semua Kelompok</option>';
             fTahsin.innerHTML = allTOpt + tOpts;
             admRepT.innerHTML = allTOpt + tOpts;
-            admFormT.innerHTML = '<option value="">-- Pilih Kelompok --</option>' + tOpts;
+            if(admFormT) admFormT.innerHTML = '<option value="">-- Pilih Kelompok --</option>' + tOpts;
         }
 
         function getTahsinInfo(tahsinId) {
@@ -1991,43 +1979,192 @@
         function updateAuthUI() {
             const isLog = appState.currentUser !== null;
             
-            // Desktop Header Buttons
-            const btnEx = document.getElementById('btn-export-excel');
-            const btnPdf = document.getElementById('btn-export-pdf');
-            const btnShare = document.getElementById('btn-share');
-
-            if (isLog) {
-                btnEx.classList.remove('hidden'); btnEx.classList.add('lg:flex');
-                btnPdf.classList.remove('hidden'); btnPdf.classList.add('lg:flex');
-                btnShare.classList.remove('hidden'); btnShare.classList.add('lg:flex');
-            } else {
-                btnEx.classList.add('hidden'); btnEx.classList.remove('lg:flex');
-                btnPdf.classList.add('hidden'); btnPdf.classList.remove('lg:flex');
-                btnShare.classList.add('hidden'); btnShare.classList.remove('lg:flex');
-            }
+            // Desktop Header Buttons (Will dynamically toggle Tailwind's lg:flex class)
+            document.getElementById('btn-export-excel').classList.toggle('lg:flex', isLog);
+            document.getElementById('btn-export-pdf').classList.toggle('lg:flex', isLog);
+            document.getElementById('btn-share').classList.toggle('lg:flex', isLog);
             
             // Toggle Login/Dashboard btn text
             document.getElementById('icon-login-toggle').className = isLog ? "fa-solid fa-gauge-high" : "fa-solid fa-right-to-bracket";
             document.getElementById('text-login-toggle').innerText = isLog ? "Dashboard" : "Login Admin";
             
-            // Force Desktop Login Btn Visibility
+            // Force Desktop Login Btn Visibility (Show only if not logged in or change to Dashboard)
             document.getElementById('btn-login-toggle').classList.toggle('hidden', false);
             document.getElementById('btn-login-toggle').classList.toggle('lg:flex', true);
 
-            // Mobile Nav Buttons (Visibility based on login)
-            const mobExport = document.getElementById('mob-export');
-            if (mobExport) {
-                mobExport.classList.toggle('hidden', !isLog);
-                mobExport.classList.toggle('flex-1', isLog);
-                mobExport.classList.toggle('flex', isLog);
+            // Mobile Nav Buttons
+            document.getElementById('mob-export').classList.toggle('hidden', !isLog);
+            document.getElementById('mob-export').classList.toggle('flex', isLog);
+            
+            document.getElementById('mob-icon-login-toggle').className = isLog ? "fa-solid fa-gauge-high text-lg mb-1 transition-colors" : "fa-solid fa-right-to-bracket text-lg mb-1 transition-colors";
+            document.getElementById('mob-text-login-toggle').innerText = isLog ? "Dashboard" : "Login";
+            
+            closePopovers();
+        }
+    
+        function toggleLainnyaMenu() {
+            const pE = document.getElementById('popover-export');
+            const pL = document.getElementById('popover-lainnya');
+            if (pE) pE.classList.add('hidden');
+            if (pL) pL.classList.toggle('hidden');
+        }
+        
+        function toggleExportMenu() {
+            const pL = document.getElementById('popover-lainnya');
+            const pE = document.getElementById('popover-export');
+            if (pL) pL.classList.add('hidden');
+            if (pE) pE.classList.toggle('hidden');
+        }
+
+        function closePopovers() {
+            const pL = document.getElementById('popover-lainnya');
+            const pE = document.getElementById('popover-export');
+            if(pL) pL.classList.add('hidden');
+            if(pE) pE.classList.add('hidden');
+        }
+
+        function handleLoginDashboardToggle() {
+            if(appState.currentUser) {
+                switchView('admin');
+            } else {
+                openLoginModal();
+            }
+        }
+
+        function handlePeriodChange() {
+            const p = document.getElementById('filterPeriode').value;
+            const start = document.getElementById('filterStartDate');
+            const end = document.getElementById('filterEndDate');
+            const today = new Date();
+
+            start.disabled = true; end.disabled = true;
+            if (p === 'today') {
+                start.value = fDate(today); end.value = fDate(today);
+            } else if (p === 'this_week') {
+                let first = today.getDate() - today.getDay() + 1; 
+                start.value = fDate(new Date(today.setDate(first)));
+                end.value = getToday();
+            } else if (p === 'this_month') {
+                start.value = fDate(new Date(today.getFullYear(), today.getMonth(), 1));
+                end.value = getToday();
+            } else {
+                start.disabled = false; end.disabled = false;
+            }
+        }
+
+        function resetFilter() {
+            document.getElementById('filterPeriode').value = 'today';
+            document.getElementById('filterKelas').value = 'all';
+            document.getElementById('filterTahsin').value = 'all';
+            document.getElementById('filterSearch').value = '';
+            handlePeriodChange();
+            applyFilters();
+        }
+
+        function applyFilters() {
+            appState.filters.startDate = document.getElementById('filterStartDate').value;
+            appState.filters.endDate = document.getElementById('filterEndDate').value;
+            appState.filters.kelas = document.getElementById('filterKelas').value;
+            appState.filters.tahsin = document.getElementById('filterTahsin').value;
+            appState.filters.search = document.getElementById('filterSearch').value.toLowerCase();
+
+            // Calculate core stats
+            let stats = calculateFingerprintStats(appState.filters.startDate, appState.filters.endDate, appState.filters.kelas, appState.filters.tahsin);
+            appState.summary = stats;
+
+            // Handle manual search filter for "Riwayat" tab specifically
+            appState.filteredData = stats.bfpInRange;
+            if (appState.filters.search !== '') {
+                appState.filteredData = stats.bfpInRange.filter(r => 
+                    r.nama.toLowerCase().includes(appState.filters.search) || 
+                    r.nis.toLowerCase().includes(appState.filters.search)
+                );
             }
             
-            const mobIconLogin = document.getElementById('mob-icon-login-toggle');
-            if (mobIconLogin) mobIconLogin.className = isLog ? "fa-solid fa-gauge-high text-lg mb-1 transition-colors" : "fa-solid fa-right-to-bracket text-lg mb-1 transition-colors";
+            // Calculate grades strictly for UI Cards based on filtered students
+            let g7 = appState.filteredData.filter(r => r.kelas.startsWith('7')).length;
+            let g8 = appState.filteredData.filter(r => r.kelas.startsWith('8')).length;
+            let g9 = appState.filteredData.filter(r => r.kelas.startsWith('9')).length;
             
-            const mobTextLogin = document.getElementById('mob-text-login-toggle');
-            if (mobTextLogin) mobTextLogin.innerText = isLog ? "Dashboard" : "Login";
+            appState.summary.g7 = g7;
+            appState.summary.g8 = g8;
+            appState.summary.g9 = g9;
+
+            appState.pagination.page = 1;
+            renderPublicUI();
+        }
+
+        function renderPublicUI() {
+            document.getElementById('sumTotalSiswa').innerText = appState.summary.totalSiswa;
+            document.getElementById('sumHarus').innerText = appState.summary.harusFinger;
+            document.getElementById('sumSudah').innerText = appState.summary.sudahFinger;
+            document.getElementById('sumBelum').innerText = appState.summary.belumFinger;
+            document.getElementById('sumPersentase').innerText = `${appState.summary.persentase}%`;
             
+            document.getElementById('sumGrade7').innerText = appState.summary.g7;
+            document.getElementById('sumGrade8').innerText = appState.summary.g8;
+            document.getElementById('sumGrade9').innerText = appState.summary.g9;
+
+            if(appState.activePublicTab === 'riwayat') renderRiwayat();
+            else if(appState.activePublicTab === 'rekap') renderRekap();
+            else if(appState.activePublicTab === 'analisis') renderAnalisis();
+            else if(appState.activePublicTab === 'grafik') renderGrafik();
+        }
+
+        function switchTab(tabId) {
+            appState.activePublicTab = tabId;
+            
+            // Reset Desktop Tabs
+            ['riwayat', 'rekap', 'analisis', 'grafik'].forEach(id => {
+                let btn = document.getElementById(`tab-${id}`);
+                if (btn) {
+                    btn.classList.remove('active');
+                }
+                let content = document.getElementById(`content-${id}`);
+                if(content) {
+                    content.classList.add('hidden');
+                    content.classList.remove('flex', 'block');
+                }
+                
+                let mNav = document.getElementById(`mob-${id}`);
+                if(mNav) {
+                    mNav.classList.remove('bg-blue-50', 'text-blue-600', 'bg-emerald-50', 'text-emerald-600', 'bg-amber-50', 'text-amber-600', 'bg-purple-50', 'text-purple-600', 'bg-mi-mint', 'text-mi-deep');
+                    mNav.classList.add('text-gray-400');
+                }
+            });
+
+            let activeBtn = document.getElementById(`tab-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            let content = document.getElementById(`content-${tabId}`);
+            if(content) {
+                content.classList.remove('hidden');
+                content.classList.add(tabId === 'riwayat' || tabId === 'rekap' ? 'flex' : 'block');
+            }
+
+            // Also reset 'Lainnya' and 'Export' mobile tabs visually just in case
+            let mobLainnya = document.getElementById('mob-lainnya');
+            if (mobLainnya) {
+                mobLainnya.classList.remove('bg-blue-50', 'text-blue-600', 'bg-emerald-50', 'text-emerald-600', 'bg-amber-50', 'text-amber-600', 'bg-purple-50', 'text-purple-600', 'bg-mi-mint', 'text-mi-deep');
+                mobLainnya.classList.add('text-gray-400');
+            }
+            
+            let activeMNav;
+            if(tabId === 'riwayat') activeMNav = document.getElementById('mob-riwayat');
+            else if(tabId === 'rekap') activeMNav = document.getElementById('mob-rekap');
+            else if(tabId === 'analisis' || tabId === 'grafik') activeMNav = document.getElementById('mob-lainnya');
+            
+            if(activeMNav) {
+                activeMNav.classList.remove('text-gray-400');
+                if (tabId === 'riwayat') activeMNav.classList.add('bg-blue-50', 'text-blue-600');
+                else if (tabId === 'rekap') activeMNav.classList.add('bg-emerald-50', 'text-emerald-600');
+                else if (tabId === 'analisis') activeMNav.classList.add('bg-amber-50', 'text-amber-600');
+                else if (tabId === 'grafik') activeMNav.classList.add('bg-purple-50', 'text-purple-600');
+            }
+
+            renderPublicUI();
             closePopovers();
         }
 
@@ -2092,8 +2229,18 @@
         let currentRekapMode = 'kelas';
         function setRekapMode(mode) {
             currentRekapMode = mode;
-            document.getElementById('btn-rekap-kelas').className = mode === 'kelas' ? 'px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-mi-deep text-white shadow-sm' : 'px-4 py-1.5 rounded-lg text-xs font-medium transition-all bg-mi-mint text-mi-deep hover:bg-mi-deep hover:text-white';
-            document.getElementById('btn-rekap-tanggal').className = mode === 'tanggal' ? 'px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-mi-deep text-white shadow-sm' : 'px-4 py-1.5 rounded-lg text-xs font-medium transition-all bg-mi-mint text-mi-deep hover:bg-mi-deep hover:text-white';
+            
+            const btnKelas = document.getElementById('btn-rekap-kelas');
+            const btnTanggal = document.getElementById('btn-rekap-tanggal');
+            const btnSiswa = document.getElementById('btn-rekap-siswa');
+
+            const activeClass = 'px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-mi-deep text-white shadow-sm';
+            const inactiveClass = 'px-4 py-1.5 rounded-lg text-xs font-medium transition-all bg-mi-mint text-mi-deep hover:bg-mi-deep hover:text-white';
+
+            btnKelas.className = mode === 'kelas' ? activeClass : inactiveClass;
+            btnTanggal.className = mode === 'tanggal' ? activeClass : inactiveClass;
+            btnSiswa.className = mode === 'siswa' ? activeClass : inactiveClass;
+            
             renderRekap();
         }
 
@@ -2102,7 +2249,7 @@
             const tbody = document.getElementById('tbody-rekap');
             const empty = document.getElementById('empty-rekap');
             
-            if(appState.filteredData.length === 0 && currentRekapMode === 'tanggal') {
+            if(appState.filteredData.length === 0 && (currentRekapMode === 'tanggal' || currentRekapMode === 'siswa')) {
                 thead.innerHTML=''; tbody.innerHTML=''; empty.classList.remove('hidden'); return;
             }
             empty.classList.add('hidden');
@@ -2111,7 +2258,7 @@
                 thead.innerHTML = `<tr><th class="px-4 py-3 text-left text-[10px] font-bold text-mi-text2 uppercase">Kelas</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Total Siswa</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Harus Finger</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Sudah Finger</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Belum Finger</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Persentase</th></tr>`;
                 
                 let html = '';
-                CLASS_LIST.forEach(c => {
+                db.classes.forEach(c => {
                     if (appState.filters.kelas !== 'all' && appState.filters.kelas !== c) return;
                     let stats = calculateFingerprintStats(appState.filters.startDate, appState.filters.endDate, c, appState.filters.tahsin);
                     html += `<tr class="hover:bg-gray-50 cursor-pointer" onclick="openModalDetailKelas('${c}')">
@@ -2124,7 +2271,7 @@
                     </tr>`;
                 });
                 tbody.innerHTML = html;
-            } else {
+            } else if(currentRekapMode === 'tanggal') {
                 thead.innerHTML = `<tr><th class="px-4 py-3 text-left text-[10px] font-bold text-mi-text2 uppercase">No</th><th class="px-4 py-3 text-left text-[10px] font-bold text-mi-text2 uppercase">Tanggal</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Total Siswa</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Harus Finger</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Sudah Finger</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Belum Finger</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Persentase</th></tr>`;
                 
                 let sDate = new Date(appState.filters.startDate);
@@ -2151,6 +2298,35 @@
                         </tr>`;
                     }
                 });
+                tbody.innerHTML = html;
+            } else if (currentRekapMode === 'siswa') {
+                thead.innerHTML = `<tr><th class="px-4 py-3 text-left text-[10px] font-bold text-mi-text2 uppercase w-12">No</th><th class="px-4 py-3 text-left text-[10px] font-bold text-mi-text2 uppercase">NIS</th><th class="px-4 py-3 text-left text-[10px] font-bold text-mi-text2 uppercase">Nama Siswa</th><th class="px-4 py-3 text-left text-[10px] font-bold text-mi-text2 uppercase">Kelas</th><th class="px-4 py-3 text-center text-[10px] font-bold text-mi-text2 uppercase">Target Finger</th><th class="px-4 py-3 text-center text-[10px] font-bold text-green-600 uppercase">Sudah Finger</th><th class="px-4 py-3 text-center text-[10px] font-bold text-accent-roseTxt uppercase">Belum Finger</th><th class="px-4 py-3 text-center text-[10px] font-bold text-accent-blueTxt uppercase">Persentase</th></tr>`;
+
+                let html = '';
+                
+                if(appState.summary.rankingStudents && appState.summary.rankingStudents.length > 0) {
+                     appState.summary.rankingStudents.forEach((s, i) => {
+                         
+                        let belumCount = s.count;
+                        let harusCount = appState.summary.activeDays;
+                        let sudahCount = harusCount - belumCount; if(sudahCount < 0) sudahCount = 0;
+                        let p = harusCount > 0 ? Math.round((sudahCount/harusCount)*100) : 0;
+
+                         html += `<tr class="hover:bg-gray-50 cursor-pointer" onclick="showStudentDetail('${s.nis}')">
+                            <td class="px-4 py-2 text-xs text-gray-500">${i+1}</td>
+                            <td class="px-4 py-2 text-xs font-mono text-gray-500">${s.nis}</td>
+                            <td class="px-4 py-2 text-xs font-bold text-mi-deep hover:underline">${s.nama}</td>
+                            <td class="px-4 py-2 text-xs text-gray-600">${s.kelas}</td>
+                            <td class="px-4 py-2 text-center text-xs font-medium">${harusCount}</td>
+                            <td class="px-4 py-2 text-center text-xs font-bold text-green-600">${sudahCount}</td>
+                            <td class="px-4 py-2 text-center text-xs font-bold text-rose-600">${belumCount}</td>
+                            <td class="px-4 py-2 text-center text-xs text-blue-700">${p}%</td>
+                        </tr>`;
+                     });
+                } else {
+                     html = `<tr><td colspan="8" class="px-4 py-4 text-xs text-center text-gray-500">Tidak ada siswa yang tercatat melanggar pada periode ini.</td></tr>`;
+                }
+
                 tbody.innerHTML = html;
             }
         }
@@ -2183,7 +2359,7 @@
                         <td class="px-3 py-2 text-xs font-bold text-mi-deep cursor-pointer hover:underline" onclick="showStudentDetail('${s.nis}')">${s.nama}</td>
                         <td class="px-3 py-2 text-xs font-mono text-gray-500">${s.nis}</td>
                         <td class="px-3 py-2 text-xs text-mi-text2">${s.kelas}</td>
-                        <td class="px-3 py-2 text-center text-xs font-bold"><span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded">${s.count} kali</span></td>
+                        <td class="px-3 py-2 text-center text-xs font-bold"><span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded">${s.count} kali belum fingerprint</span></td>
                     </tr>
                 `).join('');
             }
@@ -2220,6 +2396,7 @@
             if(chartInstances.kelas) chartInstances.kelas.destroy();
             if(chartInstances.topSiswa) chartInstances.topSiswa.destroy();
             if(chartInstances.tahsin) chartInstances.tahsin.destroy();
+            if(chartInstances.gender) chartInstances.gender.destroy();
 
             // 1. Sudah vs Belum Fingerprint (Pie)
             chartInstances.pieFP = new Chart(document.getElementById('chartPieFP'), {
@@ -2260,7 +2437,7 @@
 
             // 3. Kelas (Bar chart with datalabels on top)
             let classCounts = [];
-            CLASS_LIST.forEach(c => {
+            db.classes.forEach(c => {
                 let stats = calculateFingerprintStats(appState.filters.startDate, appState.filters.endDate, c, appState.filters.tahsin);
                 classCounts.push(stats.belumFinger);
             });
@@ -2268,7 +2445,7 @@
             chartInstances.kelas = new Chart(document.getElementById('chartKelas'), {
                 type: 'bar',
                 data: {
-                    labels: CLASS_LIST.map(c => c.split(' ')[1]),
+                    labels: db.classes.map(c => c.split(' ')[1] || c),
                     datasets: [{ label: 'Belum Fingerprint', data: classCounts, backgroundColor: '#124F47', borderRadius: 4 }]
                 },
                 options: { 
@@ -2339,6 +2516,27 @@
                     }
                 }
             });
+
+            // 6. Jenis Kelamin (Doughnut)
+            let countL = 0, countP = 0;
+            appState.summary.bfpInRange.forEach(r => {
+                let s = db.students.find(x => x.nis === r.nis);
+                if(s) {
+                    if(s.jk === 'Laki-laki') countL++;
+                    else if(s.jk === 'Perempuan') countP++;
+                }
+            });
+
+            chartInstances.gender = new Chart(document.getElementById('chartGender'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Laki-laki', 'Perempuan'],
+                    datasets: [{ data: [countL, countP], backgroundColor: ['#2563EB', '#BE123C'], borderWidth: 0 }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom' }, datalabels: {color: '#fff', font: {weight: 'bold'}} }
+                }
+            });
         }
 
         function handleRefreshPublic() {
@@ -2352,39 +2550,105 @@
             if(!appState.currentUser) return; 
 
             let dataset = [];
+            let cols = [];
             let filenamePrefix = "Monitoring-Belum-Fingerprint";
             let reportTitle = "DATA SISWA BELUM FINGERPRINT";
 
             if (source === 'public') {
                 if(appState.summary.belumFinger === 0) return Swal.fire('Kosong', 'Tidak ada data untuk diexport', 'info');
-                dataset = [...appState.filteredData].sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+                
                 let dateSuffix = appState.filters.startDate === appState.filters.endDate ? appState.filters.startDate : `${appState.filters.startDate}_sd_${appState.filters.endDate}`;
-                filenamePrefix = `Rekap-Belum-Fingerprint-${dateSuffix}`;
+                
+                if (appState.activePublicTab === 'riwayat') {
+                    cols = ["No", "Tanggal", "NIS", "Nama Siswa", "Kelas", "Tahsin", "Status Finger"];
+                    let sortedData = [...appState.filteredData].sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+                    dataset = sortedData.map((r, i) => {
+                        let s = db.students.find(x => x.nis === r.nis);
+                        let t = getTahsinInfo(s?.kelompokTahsinId);
+                        return [i+1, fDateIndo(r.tanggal), r.nis, r.nama, r.kelas, t ? t.namaKelompok : '-', r.status];
+                    });
+                    filenamePrefix = `Riwayat-Belum-Fingerprint-${dateSuffix}`;
+                    reportTitle = "RIWAYAT BELUM FINGERPRINT";
+                    
+                } else if (appState.activePublicTab === 'rekap') {
+                    if (currentRekapMode === 'kelas') {
+                        cols = ["No", "Kelas", "Total Siswa", "Harus Finger", "Sudah Finger", "Belum Finger", "Persentase"];
+                        let idx = 1;
+                        db.classes.forEach(c => {
+                            if (appState.filters.kelas !== 'all' && appState.filters.kelas !== c) return;
+                            let stats = calculateFingerprintStats(appState.filters.startDate, appState.filters.endDate, c, appState.filters.tahsin);
+                            dataset.push([idx++, c, stats.totalSiswa, stats.harusFinger, stats.sudahFinger, stats.belumFinger, stats.persentase + "%"]);
+                        });
+                        filenamePrefix = `Rekap-Kelas-Fingerprint-${dateSuffix}`;
+                        reportTitle = "REKAP BERDASARKAN KELAS";
+                        
+                    } else if (currentRekapMode === 'tanggal') {
+                        cols = ["No", "Tanggal", "Total Siswa", "Harus Finger", "Sudah Finger", "Belum Finger", "Persentase"];
+                        let sDate = new Date(appState.filters.startDate);
+                        let eDate = new Date(appState.filters.endDate);
+                        let dates = [];
+                        while(sDate <= eDate) {
+                            if(sDate.getDay() !== 0 && sDate.getDay() !== 6) dates.push(fDate(sDate));
+                            sDate.setDate(sDate.getDate() + 1);
+                        }
+                        dates.reverse();
+                        let idx = 1;
+                        dates.forEach(d => {
+                            let dStats = calculateFingerprintStats(d, d, appState.filters.kelas, appState.filters.tahsin);
+                            if(dStats.harusFinger > 0) {
+                                dataset.push([idx++, fDateIndo(d), dStats.totalSiswa, dStats.harusFinger, dStats.sudahFinger, dStats.belumFinger, dStats.persentase + "%"]);
+                            }
+                        });
+                        filenamePrefix = `Rekap-Tanggal-Fingerprint-${dateSuffix}`;
+                        reportTitle = "REKAP BERDASARKAN TANGGAL";
+                        
+                    } else if (currentRekapMode === 'siswa') {
+                        cols = ["No", "NIS", "Nama Siswa", "Kelas", "Target Finger", "Sudah Finger", "Belum Finger", "Persentase"];
+                        let idx = 1;
+                        appState.summary.rankingStudents.forEach(s => {
+                            let belumCount = s.count;
+                            let harusCount = appState.summary.activeDays;
+                            let sudahCount = harusCount - belumCount; if(sudahCount < 0) sudahCount = 0;
+                            let p = harusCount > 0 ? Math.round((sudahCount/harusCount)*100) : 0;
+                            dataset.push([idx++, s.nis, s.nama, s.kelas, harusCount, sudahCount, belumCount, p + "%"]);
+                        });
+                        filenamePrefix = `Rekap-Siswa-Fingerprint-${dateSuffix}`;
+                        reportTitle = "REKAP BERDASARKAN SISWA";
+                    }
+                } else {
+                    return Swal.fire('Info', 'Silakan buka tab Riwayat atau Rekap terlebih dahulu untuk mengekspor data.', 'info');
+                }
+                
             } else if (source === 'admin') {
                 if(appState.activeAdminMenu === 'data-fp') {
-                    dataset = [...db.bfp];
-                    if(appState.admFpDate) dataset = dataset.filter(r => r.tanggal === appState.admFpDate);
-                    if(appState.admFpKelas !== 'all') dataset = dataset.filter(r => r.kelas === appState.admFpKelas);
-                    if(appState.admFpSearch) dataset = dataset.filter(r => r.nis.includes(appState.admFpSearch) || r.nama.toLowerCase().includes(appState.admFpSearch.toLowerCase()));
-                    dataset.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+                    cols = ["No", "Tanggal", "NIS", "Nama Siswa", "Kelas", "Tahsin", "Status Finger"];
+                    let rawData = [...db.bfp];
+                    if(appState.admFpDate) rawData = rawData.filter(r => r.tanggal === appState.admFpDate);
+                    if(appState.admFpKelas !== 'all') rawData = rawData.filter(r => r.kelas === appState.admFpKelas);
+                    if(appState.admFpSearch) rawData = rawData.filter(r => r.nis.includes(appState.admFpSearch) || r.nama.toLowerCase().includes(appState.admFpSearch.toLowerCase()));
+                    rawData.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+                    
+                    dataset = rawData.map((r, i) => {
+                        let s = db.students.find(x => x.nis === r.nis);
+                        let t = getTahsinInfo(s?.kelompokTahsinId);
+                        return [i+1, fDateIndo(r.tanggal), r.nis, r.nama, r.kelas, t ? t.namaKelompok : '-', r.status];
+                    });
                     filenamePrefix = `Admin-Data-BFP-${getToday()}`;
                 }
             }
 
             if(dataset.length === 0) return Swal.fire('Kosong', 'Tidak ada data untuk diexport', 'info');
 
-            // Attach tahsin info to export dataset
-            let enhancedDataset = dataset.map(r => {
-                let s = db.students.find(x => x.nis === r.nis);
-                let t = getTahsinInfo(s?.kelompokTahsinId);
-                return { ...r, tahsin: t ? t.namaKelompok : '-' };
-            });
-
             if (type === 'excel') {
-                const exportObj = enhancedDataset.map((r, i) => ({"No": i+1, "Tanggal": r.tanggal, "NIS": r.nis, "Nama Siswa": r.nama, "Kelas": r.kelas, "Tahsin": r.tahsin, "Status Finger": r.status}));
+                let exportObj = dataset.map(row => {
+                    let obj = {};
+                    cols.forEach((col, i) => { obj[col] = row[i]; });
+                    return obj;
+                });
+                
                 const ws = XLSX.utils.json_to_sheet(exportObj);
                 const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Belum Fingerprint");
+                XLSX.utils.book_append_sheet(wb, ws, "Data");
                 XLSX.writeFile(wb, `${filenamePrefix}.xlsx`);
             } else if (type === 'pdf') {
                 const { jsPDF } = window.jspdf; const doc = new jsPDF();
@@ -2401,11 +2665,8 @@
                 }
                 doc.text(`Tanggal Cetak: ${fDateIndo(new Date())}`, 14, source === 'public' ? 52 : 34);
 
-                const cols = ["No", "Tanggal", "NIS", "Nama Siswa", "Kelas", "Tahsin", "Status Finger"];
-                const rows = enhancedDataset.map((r, i) => [i+1, fDateIndo(r.tanggal), r.nis, r.nama, r.kelas, r.tahsin, r.status]);
-                
                 let startY = source === 'public' ? 58 : 40;
-                doc.autoTable({ head: [cols], body: rows, startY: startY, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [18, 79, 71] } }); 
+                doc.autoTable({ head: [cols], body: dataset, startY: startY, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [18, 79, 71] } }); 
                 
                 doc.setFontSize(8); doc.text("Sistem Monitoring Siswa Belum Fingerprint", 14, doc.lastAutoTable.finalY + 10);
                 doc.save(`${filenamePrefix}.pdf`);
@@ -2443,7 +2704,7 @@
             }
             else if (type === 'class') {
                 text += `*REKAP BERDASARKAN KELAS (Belum FP):*\n`;
-                CLASS_LIST.forEach(c => {
+                db.classes.forEach(c => {
                     let stats = calculateFingerprintStats(appState.filters.startDate, appState.filters.endDate, c, appState.filters.tahsin);
                     if(stats.belumFinger > 0) text += `- ${c} : ${stats.belumFinger} belum finger\n`;
                 });
@@ -2470,58 +2731,43 @@
         // ==========================================
         // 7. ADMIN AUTH & LAYOUT
         // ==========================================
-        function openLoginModal() { document.getElementById('modalLogin').classList.remove('hidden'); }
-        
-        function togglePasswordView() {
-            const input = document.getElementById('loginPassword');
-            const icon = document.getElementById('loginPasswordIcon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+        function togglePasswordVisibility(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(iconId);
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
             } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+                passwordInput.type = "password";
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
             }
         }
 
+        function openLoginModal() { document.getElementById('modalLogin').classList.remove('hidden'); }
+        
         function handleLogin() {
             const u = document.getElementById('loginUsername').value;
             const p = document.getElementById('loginPassword').value;
-            const btn = document.getElementById('btnLoginSubmit');
             
-            // Set Loading State
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memproses...';
-            btn.disabled = true;
-            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            const user = db.users.find(x => x.username === u && x.password === p && x.status === 'Aktif');
 
-            setTimeout(() => {
-                // Reset Button State
-                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk';
-                btn.disabled = false;
-                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+            if(user) {
+                closeModal('modalLogin');
+                appState.currentUser = {username: user.username, name: user.name, role: user.role};
+                localStorage.setItem('mi_session', JSON.stringify(appState.currentUser));
+                
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
 
-                const user = db.users.find(x => x.username === u && x.password === p && x.status === 'Aktif');
-
-                if(user) {
-                    closeModal('modalLogin');
-                    appState.currentUser = {username: user.username, name: user.name, role: user.role};
-                    localStorage.setItem('mi_session', JSON.stringify(appState.currentUser));
-                    
-                    document.getElementById('loginUsername').value = '';
-                    document.getElementById('loginPassword').value = '';
-                    
-                    // Reset eye icon if it was visible
-                    document.getElementById('loginPassword').type = 'password';
-                    document.getElementById('loginPasswordIcon').className = 'fa-solid fa-eye text-gray-400 text-sm hover:text-mi-deep transition-colors';
-
-                    Swal.fire({toast:true, position:'top-end', icon:'success', title:'Login Berhasil', showConfirmButton:false, timer:1500});
-                    updateAuthUI();
-                } else {
-                    Swal.fire('Login Gagal', 'Username atau password salah / Akun tidak aktif', 'error');
-                }
-            }, 800); // 800ms animasi delay
+                Swal.fire({toast:true, position:'top-end', icon:'success', title:'Login Berhasil', showConfirmButton:false, timer:1500});
+                updateAuthUI();
+                // Stay on HOME, don't auto redirect.
+            } else {
+                Swal.fire('Login Gagal', 'Username atau password salah / Akun tidak aktif', 'error');
+            }
         }
 
         function handleLogout() {
@@ -2646,7 +2892,7 @@
             document.getElementById('adm-dash-total-record').innerText = monthlyData.length;
 
             let htmlCls = '';
-            CLASS_LIST.forEach(c => {
+            db.classes.forEach(c => {
                 let s = calculateFingerprintStats(targetDate, targetDate, c, 'all');
                 htmlCls += `<tr class="hover:bg-gray-50"><td class="px-4 py-2 text-xs font-bold text-mi-deep cursor-pointer hover:underline" onclick="openModalDaftarSiswa('${c}', '${targetDate}')">${c}</td><td class="px-4 py-2 text-xs text-center">${s.totalSiswa}</td><td class="px-4 py-2 text-xs text-center text-mi-emerald font-bold">${s.sudahFinger}</td><td class="px-4 py-2 text-xs text-center font-bold text-accent-roseTxt">${s.belumFinger}</td><td class="px-4 py-2 text-xs text-center">${s.persentase}%</td></tr>`;
             });
@@ -2672,11 +2918,11 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { datalabels: {color: '#fff', font:{weight:'bold'} } } }
             });
 
-            let classCounts = CLASS_LIST.map(c => calculateFingerprintStats(targetDate, targetDate, c, 'all').belumFinger);
+            let classCounts = db.classes.map(c => calculateFingerprintStats(targetDate, targetDate, c, 'all').belumFinger);
             chartInstances.admKelas = new Chart(document.getElementById('admChartKelas'), {
                 type: 'bar',
                 data: {
-                    labels: CLASS_LIST.map(c => c.split(' ')[1]),
+                    labels: db.classes.map(c => c.split(' ')[1] || c),
                     datasets: [{ label: 'Belum Fingerprint', data: classCounts, backgroundColor: '#BE123C', borderRadius: 4 }]
                 },
                 options: { 
@@ -2883,12 +3129,12 @@
                 return `
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-2 text-xs text-gray-500">${i+1}</td>
-                    <td class="px-4 py-2 text-xs font-mono font-bold cursor-pointer text-mi-deep hover:underline" onclick="showStudentDetail('${s.nis}')">${s.nis}</td>
+                    <td class="px-4 py-2 text-xs font-mono font-bold cursor-pointer text-mi-deep hover:underline" onclick="openModalAdmSiswa('detail', '${s.nis}')">${s.nisn || s.nis}</td>
                     <td class="px-4 py-2 text-xs font-bold text-gray-800">${s.nama}</td>
                     <td class="px-4 py-2 text-xs text-gray-600">${s.kelas}</td>
                     <td class="px-4 py-2 text-xs text-gray-600">${tName}</td>
                     <td class="px-4 py-2 text-center whitespace-nowrap">
-                        <button onclick="openModalAdmSiswaDetailInfo('${s.nis}')" class="text-emerald-500 hover:text-emerald-700 bg-emerald-50 p-1.5 rounded mr-1" title="Detail"><i class="fa-solid fa-eye text-xs"></i></button>
+                        <button onclick="openModalAdmSiswa('detail', '${s.nis}')" class="text-green-500 hover:text-green-700 bg-green-50 p-1.5 rounded mr-1" title="Detail"><i class="fa-solid fa-eye text-xs"></i></button>
                         <button onclick="openModalAdmSiswa('edit', '${s.nis}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-1.5 rounded mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                         <button onclick="adminDeleteSiswa('${s.nis}')" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
                     </td>
@@ -2898,181 +3144,140 @@
             if(data.length === 0) tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-4 text-xs text-center text-gray-500">Data tidak ditemukan</td></tr>`;
         }
 
-        function openModalAdmSiswa(mode, nis = '') {
-            document.getElementById('adm-form-mode').value = mode;
-            document.getElementById('title-modal-siswa').innerHTML = mode === 'add' ? '<i class="fa-solid fa-user-plus mr-2"></i> Tambah Siswa Baru' : '<i class="fa-solid fa-user-pen mr-2"></i> Edit Data Siswa';
-            
+        function openModalAdmSiswa(mode, nis = '') { 
+            document.getElementById('siswa-form-mode').value = mode;
+            document.getElementById('siswa-form-old-nis').value = nis;
+
+            const title = document.getElementById('title-modal-siswa');
+            const btnSave = document.getElementById('btn-save-siswa');
+            const formFields = document.querySelectorAll('.siswa-field');
+
             if (mode === 'add') {
-                document.getElementById('adm-form-old-nis').value = '';
-                document.getElementById('adm-form-siswaid').value = '';
-                document.getElementById('adm-form-nisn').value = '';
-                document.getElementById('adm-form-nipd').value = '';
-                document.getElementById('adm-form-nik').value = '';
-                document.getElementById('adm-form-nama').value = '';
-                document.getElementById('adm-form-panggilan').value = '';
-                document.getElementById('adm-form-jk').value = 'L';
-                document.getElementById('adm-form-tplahir').value = '';
-                document.getElementById('adm-form-tglahir').value = '';
-                document.getElementById('adm-form-alamat').value = '';
-                document.getElementById('adm-form-rt').value = '';
-                document.getElementById('adm-form-rw').value = '';
-                document.getElementById('adm-form-desa').value = '';
-                document.getElementById('adm-form-kec').value = '';
-                document.getElementById('adm-form-kab').value = '';
-                document.getElementById('adm-form-prov').value = '';
-                document.getElementById('adm-form-pos').value = '';
-                document.getElementById('adm-form-hpsiswa').value = '';
-                document.getElementById('adm-form-ayah').value = '';
-                document.getElementById('adm-form-statusayah').value = '';
-                document.getElementById('adm-form-hpayah').value = '';
-                document.getElementById('adm-form-ibu').value = '';
-                document.getElementById('adm-form-statusibu').value = '';
-                document.getElementById('adm-form-hpibu').value = '';
-                document.getElementById('adm-form-kelas').value = CLASS_LIST[0] || '';
-                document.getElementById('adm-form-tahsin').value = '';
-                document.getElementById('adm-form-statusbelajar').value = 'Aktif';
-                document.getElementById('adm-form-userbelajar').value = '';
-                document.getElementById('adm-form-passbelajar').value = '';
+                title.innerHTML = '<i class="fa-solid fa-user-plus mr-2"></i> Tambah Siswa Baru';
+                btnSave.classList.remove('hidden');
+                formFields.forEach(f => { if(f.id !== 'adm-form-siswaid') f.value = ''; f.disabled = false; });
+                document.getElementById('adm-form-siswaid').value = `SID-${Date.now()}`;
             } else {
-                let s = db.students.find(x => x.nis === nis);
+                const s = db.students.find(x => x.nis === nis);
                 if (s) {
-                    document.getElementById('adm-form-old-nis').value = s.nis;
                     document.getElementById('adm-form-siswaid').value = s.siswaId || '';
-                    document.getElementById('adm-form-nisn').value = s.nisn || '';
-                    document.getElementById('adm-form-nipd').value = s.nipd || s.nis;
+                    document.getElementById('adm-form-nisn').value = s.nisn || s.nis || '';
+                    document.getElementById('adm-form-nipd').value = s.nipd || '';
                     document.getElementById('adm-form-nik').value = s.nik || '';
                     document.getElementById('adm-form-nama').value = s.nama || '';
-                    document.getElementById('adm-form-panggilan').value = s.namaPanggilan || '';
-                    document.getElementById('adm-form-jk').value = s.jk || 'L';
+                    document.getElementById('adm-form-panggilan').value = s.panggilan || '';
+                    document.getElementById('adm-form-jk').value = s.jk || 'Laki-laki';
                     document.getElementById('adm-form-tplahir').value = s.tempatLahir || '';
                     document.getElementById('adm-form-tglahir').value = s.tanggalLahir || '';
+                    document.getElementById('adm-form-kelas').value = s.kelas || '';
+                    document.getElementById('adm-form-tahsin').value = s.kelompokTahsinId || '';
                     document.getElementById('adm-form-alamat').value = s.alamat || '';
                     document.getElementById('adm-form-rt').value = s.rt || '';
                     document.getElementById('adm-form-rw').value = s.rw || '';
                     document.getElementById('adm-form-desa').value = s.desa || '';
-                    document.getElementById('adm-form-kec').value = s.kecamatan || '';
-                    document.getElementById('adm-form-kab').value = s.kabupaten || '';
-                    document.getElementById('adm-form-prov').value = s.provinsi || '';
-                    document.getElementById('adm-form-pos').value = s.kodePos || '';
+                    document.getElementById('adm-form-kec').value = s.kec || '';
+                    document.getElementById('adm-form-kab').value = s.kab || '';
+                    document.getElementById('adm-form-prov').value = s.prov || '';
+                    document.getElementById('adm-form-kodepos').value = s.kodePos || '';
                     document.getElementById('adm-form-hpsiswa').value = s.hpSiswa || '';
-                    document.getElementById('adm-form-ayah').value = s.namaAyah || '';
-                    document.getElementById('adm-form-statusayah').value = s.statusAyah || '';
+                    document.getElementById('adm-form-namaayah').value = s.namaAyah || '';
+                    document.getElementById('adm-form-statusayah').value = s.statusAyah || 'Masih Hidup';
                     document.getElementById('adm-form-hpayah').value = s.hpAyah || '';
-                    document.getElementById('adm-form-ibu').value = s.namaIbu || '';
-                    document.getElementById('adm-form-statusibu').value = s.statusIbu || '';
+                    document.getElementById('adm-form-namaibu').value = s.namaIbu || '';
+                    document.getElementById('adm-form-statusibu').value = s.statusIbu || 'Masih Hidup';
                     document.getElementById('adm-form-hpibu').value = s.hpIbu || '';
-                    document.getElementById('adm-form-kelas').value = s.kelas || '';
-                    document.getElementById('adm-form-tahsin').value = s.kelompokTahsinId || '';
-                    document.getElementById('adm-form-statusbelajar').value = s.statusBelajar || 'Aktif';
-                    document.getElementById('adm-form-userbelajar').value = s.usernameBelajar || '';
-                    document.getElementById('adm-form-passbelajar').value = s.passwordBelajar || '';
+                    document.getElementById('adm-form-statusbelajar').value = s.statusBelajar || 'Belum Ada';
+                    document.getElementById('adm-form-userbelajar').value = s.userBelajar || '';
+                    document.getElementById('adm-form-passbelajar').value = s.passBelajar || '';
+                    
+                    if (mode === 'edit') {
+                        title.innerHTML = '<i class="fa-solid fa-user-pen mr-2"></i> Edit Data Siswa';
+                        btnSave.classList.remove('hidden');
+                        formFields.forEach(f => { if(f.id !== 'adm-form-siswaid') f.disabled = false; });
+                    } else if (mode === 'detail') {
+                        title.innerHTML = '<i class="fa-solid fa-id-card mr-2"></i> Detail Data Siswa';
+                        btnSave.classList.add('hidden');
+                        formFields.forEach(f => f.disabled = true);
+                    }
                 }
             }
-            document.getElementById('modalAdmSiswa').classList.remove('hidden');
+            document.getElementById('modalAdmSiswa').classList.remove('hidden'); 
         }
         
         function adminSaveSiswa() {
-            let mode = document.getElementById('adm-form-mode').value;
-            let oldNis = document.getElementById('adm-form-old-nis').value;
-            
+            let mode = document.getElementById('siswa-form-mode').value;
+            let oldNis = document.getElementById('siswa-form-old-nis').value;
+
+            // Gathering all fields
             let sData = {
                 siswaId: document.getElementById('adm-form-siswaid').value,
                 nisn: document.getElementById('adm-form-nisn').value,
+                nis: document.getElementById('adm-form-nisn').value, // Using NISN as primary NIS in dummy system
                 nipd: document.getElementById('adm-form-nipd').value,
-                nis: document.getElementById('adm-form-nipd').value, // NIPD acts as the main identifier (nis)
                 nik: document.getElementById('adm-form-nik').value,
                 nama: document.getElementById('adm-form-nama').value,
-                namaPanggilan: document.getElementById('adm-form-panggilan').value,
+                panggilan: document.getElementById('adm-form-panggilan').value,
                 jk: document.getElementById('adm-form-jk').value,
                 tempatLahir: document.getElementById('adm-form-tplahir').value,
                 tanggalLahir: document.getElementById('adm-form-tglahir').value,
+                kelas: document.getElementById('adm-form-kelas').value,
+                kelompokTahsinId: document.getElementById('adm-form-tahsin').value,
                 alamat: document.getElementById('adm-form-alamat').value,
                 rt: document.getElementById('adm-form-rt').value,
                 rw: document.getElementById('adm-form-rw').value,
                 desa: document.getElementById('adm-form-desa').value,
-                kecamatan: document.getElementById('adm-form-kec').value,
-                kabupaten: document.getElementById('adm-form-kab').value,
-                provinsi: document.getElementById('adm-form-prov').value,
-                kodePos: document.getElementById('adm-form-pos').value,
+                kec: document.getElementById('adm-form-kec').value,
+                kab: document.getElementById('adm-form-kab').value,
+                prov: document.getElementById('adm-form-prov').value,
+                kodePos: document.getElementById('adm-form-kodepos').value,
                 hpSiswa: document.getElementById('adm-form-hpsiswa').value,
-                namaAyah: document.getElementById('adm-form-ayah').value,
+                namaAyah: document.getElementById('adm-form-namaayah').value,
                 statusAyah: document.getElementById('adm-form-statusayah').value,
                 hpAyah: document.getElementById('adm-form-hpayah').value,
-                namaIbu: document.getElementById('adm-form-ibu').value,
+                namaIbu: document.getElementById('adm-form-namaibu').value,
                 statusIbu: document.getElementById('adm-form-statusibu').value,
                 hpIbu: document.getElementById('adm-form-hpibu').value,
-                kelas: document.getElementById('adm-form-kelas').value,
-                kelompokTahsinId: document.getElementById('adm-form-tahsin').value,
                 statusBelajar: document.getElementById('adm-form-statusbelajar').value,
-                usernameBelajar: document.getElementById('adm-form-userbelajar').value,
-                passwordBelajar: document.getElementById('adm-form-passbelajar').value
+                userBelajar: document.getElementById('adm-form-userbelajar').value,
+                passBelajar: document.getElementById('adm-form-passbelajar').value
             };
             
-            if(!sData.nipd || !sData.nama || !sData.kelas) return Swal.fire('Error', 'NIPD, Nama Lengkap dan Kelas wajib diisi', 'error');
-
-            if(mode === 'add') {
-                if(db.students.find(s => s.nis === sData.nis)) return Swal.fire('Error', 'NIPD tersebut sudah digunakan', 'error');
+            if(!sData.nis || !sData.nama || !sData.kelas) return Swal.fire('Error', 'NISN, Nama dan Kelas wajib diisi', 'error');
+            
+            if (mode === 'add') {
+                if(db.students.find(s => s.nis === sData.nis)) return Swal.fire('Error', 'NIS/NISN sudah ada', 'error');
                 db.students.push(sData);
             } else {
-                let sIndex = db.students.findIndex(x => x.nis === oldNis);
-                if(sIndex > -1) {
-                    if(sData.nis !== oldNis && db.students.find(x => x.nis === sData.nis)) return Swal.fire('Error', 'NIPD tersebut sudah digunakan oleh siswa lain', 'error');
+                let idx = db.students.findIndex(s => s.nis === oldNis);
+                if (idx > -1) {
+                    if (sData.nis !== oldNis && db.students.find(s => s.nis === sData.nis)) return Swal.fire('Error', 'NIS/NISN pengganti sudah dipakai siswa lain', 'error');
+                    db.students[idx] = sData;
                     
-                    if (sData.nis !== oldNis) {
-                        db.bfp.forEach(r => { if(r.nis === oldNis) { r.nis = sData.nis; r.nama = sData.nama; r.kelas = sData.kelas; } });
-                    } else {
-                        db.bfp.forEach(r => { if(r.nis === oldNis) { r.nama = sData.nama; r.kelas = sData.kelas; } });
+                    // Cascade update BFP records for consistency
+                    if (sData.nis !== oldNis || sData.nama !== db.students[idx].nama || sData.kelas !== db.students[idx].kelas) {
+                        db.bfp.forEach(r => {
+                            if (r.nis === oldNis) {
+                                r.nis = sData.nis;
+                                r.nama = sData.nama;
+                                r.kelas = sData.kelas;
+                            }
+                        });
                     }
-                    db.students[sIndex] = sData;
                 }
             }
-            
+
             saveData();
             closeModal('modalAdmSiswa');
             Swal.fire({toast:true, position:'top-end', icon:'success', title:'Data Siswa Tersimpan', showConfirmButton:false, timer:1500});
             renderTableAdminSiswa();
         }
 
-        function openModalAdmSiswaDetailInfo(nis) {
-            let s = db.students.find(x => x.nis === nis);
-            if (!s) return;
-            
-            let t = getTahsinInfo(s.kelompokTahsinId);
-            let tName = t ? t.namaKelompok : '-';
-
-            const fields = [
-                { label: 'SiswaID', value: s.siswaId }, { label: 'NISN', value: s.nisn }, { label: 'NIPD', value: s.nipd || s.nis },
-                { label: 'NIK', value: s.nik }, { label: 'Nama Lengkap', value: s.nama }, { label: 'Nama Panggilan', value: s.namaPanggilan },
-                { label: 'Jenis Kelamin', value: s.jk === 'L' ? 'Laki-laki' : 'Perempuan' }, { label: 'Tempat, Tanggal Lahir', value: `${s.tempatLahir||'-'}, ${fDateIndo(s.tanggalLahir)}` },
-                { label: 'Kelas', value: s.kelas }, { label: 'Kelompok Tahsin', value: tName },
-                { label: 'Alamat', value: s.alamat }, { label: 'RT / RW', value: `${s.rt||'-'} / ${s.rw||'-'}` },
-                { label: 'Desa/Kel.', value: s.desa }, { label: 'Kecamatan', value: s.kecamatan },
-                { label: 'Kabupaten/Kota', value: s.kabupaten }, { label: 'Provinsi', value: s.provinsi },
-                { label: 'Kode Pos', value: s.kodePos }, { label: 'No HP Siswa', value: s.hpSiswa },
-                { label: 'Nama Ayah', value: s.namaAyah }, { label: 'Status Ayah', value: s.statusAyah }, { label: 'No HP Ayah', value: s.hpAyah },
-                { label: 'Nama Ibu', value: s.namaIbu }, { label: 'Status Ibu', value: s.statusIbu }, { label: 'No HP Ibu', value: s.hpIbu },
-                { label: 'Status Belajar ID', value: s.statusBelajar }, { label: 'Username Belajar ID', value: s.usernameBelajar }, { label: 'Password Belajar ID', value: s.passwordBelajar }
-            ];
-
-            const c = document.getElementById('content-siswa-detail');
-            c.innerHTML = fields.map(f => `
-                <div class="border-b border-gray-100 pb-2">
-                    <span class="block text-[10px] font-bold text-gray-500 uppercase tracking-wide">${f.label}</span>
-                    <span class="block text-sm font-semibold text-gray-800 mt-1">${f.value || '-'}</span>
-                </div>
-            `).join('');
-
-            document.getElementById('modalAdmSiswaDetailInfo').classList.remove('hidden');
-        }
-
         function adminDeleteSiswa(nis) {
-            Swal.fire({title: 'Hapus Siswa?', text: 'Seluruh rekap fingerprint histori milik siswa ini juga akan ikut terhapus.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#BE123C'}).then(res => {
+            Swal.fire({title: 'Hapus Siswa?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#BE123C'}).then(res => {
                 if(res.isConfirmed) {
                     db.students = db.students.filter(s => s.nis !== nis);
-                    db.bfp = db.bfp.filter(r => r.nis !== nis);
                     saveData();
                     renderTableAdminSiswa();
-                    Swal.fire('Terhapus', 'Data siswa dan histori berhasil dihapus', 'success');
                 }
             });
         }
@@ -3088,8 +3293,8 @@
                     <td class="px-4 py-2 text-xs font-bold text-gray-800 cursor-pointer hover:text-mi-deep hover:underline" onclick="openModalDetailKelas('${c}')">${c}</td>
                     <td class="px-4 py-2 text-xs text-gray-600">Kelas ${c.charAt(0)}</td>
                     <td class="px-4 py-2 text-center text-xs font-bold"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">${count} Siswa</span></td>
-                    <td class="px-4 py-2 text-center whitespace-nowrap">
-                        <button onclick="openModalDetailKelas('${c}')" class="text-emerald-500 hover:text-emerald-700 bg-emerald-50 p-1.5 rounded mr-1" title="Detail"><i class="fa-solid fa-eye text-xs"></i></button>
+                    <td class="px-4 py-2 text-center text-xs whitespace-nowrap">
+                        <button onclick="openModalDetailKelas('${c}')" class="text-green-500 hover:text-green-700 bg-green-50 p-1.5 rounded mr-1" title="Detail"><i class="fa-solid fa-eye text-xs"></i></button>
                         <button onclick="openModalAdmKelas('edit', '${c}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-1.5 rounded mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                         <button onclick="adminDeleteKelas('${c}')" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
                     </td>
@@ -3097,82 +3302,56 @@
             `}).join('');
         }
 
-        function openModalAdmKelas(mode, kelasStr = '') {
-            document.getElementById('form-kelas-mode').value = mode;
-            document.getElementById('form-kelas-old').value = kelasStr;
+        function openModalAdmKelas(mode, name = '') {
+            document.getElementById('kelas-form-mode').value = mode;
+            document.getElementById('kelas-form-old').value = name;
+            document.getElementById('kelas-form-nama').value = name;
             
-            if (mode === 'add') {
-                document.getElementById('title-modal-kelas').innerHTML = '<i class="fa-solid fa-school mr-2"></i> Tambah Kelas';
-                document.getElementById('form-kelas-nama').value = '';
-            } else {
-                document.getElementById('title-modal-kelas').innerHTML = '<i class="fa-solid fa-pen mr-2"></i> Edit Kelas';
-                document.getElementById('form-kelas-nama').value = kelasStr;
-            }
+            document.getElementById('title-modal-kelas').innerHTML = mode === 'add' ? '<i class="fa-solid fa-plus mr-2"></i> Tambah Kelas' : '<i class="fa-solid fa-pen mr-2"></i> Edit Kelas';
             document.getElementById('modalAdmKelas').classList.remove('hidden');
         }
 
         function adminSaveKelas() {
-            let mode = document.getElementById('form-kelas-mode').value;
-            let oldName = document.getElementById('form-kelas-old').value;
-            let newName = document.getElementById('form-kelas-nama').value.trim();
-
-            if (!newName) return Swal.fire('Error', 'Nama kelas tidak boleh kosong', 'error');
-
-            if (mode === 'add') {
-                if (db.classes.includes(newName)) return Swal.fire('Error', 'Nama kelas sudah ada', 'error');
+            const mode = document.getElementById('kelas-form-mode').value;
+            const oldName = document.getElementById('kelas-form-old').value;
+            const newName = document.getElementById('kelas-form-nama').value;
+            
+            if(!newName) return Swal.fire('Error', 'Nama kelas wajib diisi', 'error');
+            
+            if(mode === 'add') {
+                if(db.classes.includes(newName)) return Swal.fire('Error', 'Kelas sudah ada', 'error');
                 db.classes.push(newName);
-                CLASS_LIST.push(newName);
-                db.classes.sort();
-                CLASS_LIST.sort();
             } else {
-                if (oldName !== newName && db.classes.includes(newName)) return Swal.fire('Error', 'Nama kelas sudah digunakan', 'error');
+                if(oldName !== newName && db.classes.includes(newName)) return Swal.fire('Error', 'Kelas sudah ada', 'error');
+                const idx = db.classes.indexOf(oldName);
+                if(idx > -1) db.classes[idx] = newName;
                 
-                let idx = db.classes.indexOf(oldName);
-                if (idx > -1) {
-                    db.classes[idx] = newName;
-                    
-                    // Update CLASS_LIST
-                    let listIdx = CLASS_LIST.indexOf(oldName);
-                    if (listIdx > -1) CLASS_LIST[listIdx] = newName;
-
-                    db.classes.sort();
-                    CLASS_LIST.sort();
-
-                    // Update Students
-                    db.students.forEach(s => {
-                        if (s.kelas === oldName) s.kelas = newName;
-                    });
-
-                    // Update BFP Records
-                    db.bfp.forEach(r => {
-                        if (r.kelas === oldName) r.kelas = newName;
-                    });
-                }
+                // Cascade update to students
+                db.students.forEach(s => { if(s.kelas === oldName) s.kelas = newName; });
+                // Cascade update to bfp records (important so history doesn't break)
+                db.bfp.forEach(r => { if(r.kelas === oldName) r.kelas = newName; });
             }
-
+            db.classes.sort(); 
             saveData();
             populateDropdowns();
+            renderTableAdminKelas();
             closeModal('modalAdmKelas');
             Swal.fire({toast:true, position:'top-end', icon:'success', title:'Kelas Tersimpan', showConfirmButton:false, timer:1500});
-            renderTableAdminKelas();
         }
 
-        function adminDeleteKelas(kelasStr) {
-            let count = db.students.filter(s => s.kelas === kelasStr).length;
-            if (count > 0) {
-                return Swal.fire('Gagal', `Kelas tidak dapat dihapus karena masih ada ${count} siswa yang terdaftar di kelas ini. Pindahkan atau hapus siswa terlebih dahulu.`, 'error');
-            }
-
-            Swal.fire({title: 'Hapus Kelas?', text: `Yakin ingin menghapus kelas ${kelasStr}?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#BE123C'}).then(res => {
-                if (res.isConfirmed) {
-                    db.classes = db.classes.filter(c => c !== kelasStr);
-                    let listIdx = CLASS_LIST.indexOf(kelasStr);
-                    if (listIdx > -1) CLASS_LIST.splice(listIdx, 1);
-                    
+        function adminDeleteKelas(name) {
+            Swal.fire({
+                title: `Hapus Kelas ${name}?`, 
+                text: "Siswa yang berada di kelas ini akan dikosongkan kelasnya.", 
+                icon: 'warning', showCancelButton: true, confirmButtonColor: '#BE123C'
+            }).then(res => {
+                if(res.isConfirmed) {
+                    db.classes = db.classes.filter(c => c !== name);
+                    db.students.forEach(s => { if(s.kelas === name) s.kelas = 'Tanpa Kelas'; });
                     saveData();
                     populateDropdowns();
                     renderTableAdminKelas();
-                    Swal.fire('Terhapus', 'Kelas berhasil dihapus', 'success');
+                    Swal.fire('Terhapus', `Kelas ${name} telah dihapus.`, 'success');
                 }
             });
         }
@@ -3455,8 +3634,6 @@
         }
 
         function changePageAdmFP(dir) {
-            // Recalculate max based on current filter bounds is complex without re-filtering, 
-            // but for dummy simplicity we'll just guard limits loosely
             appState.admFpPage += dir;
             if (appState.admFpPage < 1) appState.admFpPage = 1;
             renderTableAdminFP();
@@ -3541,7 +3718,7 @@
                     if(!rTanggal) { isValid = false; errStr.push('Tgl kosong'); }
                     if(!rNis) { isValid = false; errStr.push('NIS kosong'); }
                     if(!rNama) { isValid = false; errStr.push('Nama kosong'); }
-                    if(!CLASS_LIST.includes(rKelas)) { isValid = false; errStr.push('Kelas tdk valid'); }
+                    if(!db.classes.includes(rKelas)) { isValid = false; errStr.push('Kelas tdk valid'); }
                     if(rStatus !== 'Belum Fingerprint') { isValid = false; errStr.push('Status hrs "Belum Fingerprint"'); }
 
                     let dStr = rTanggal;
@@ -3659,7 +3836,7 @@
                 }).join('');
             } else if (appState.activeRepTab === 'kelas') {
                 const tbody = document.getElementById('tbody-rep-kelas');
-                let targetClasses = CLASS_LIST;
+                let targetClasses = db.classes;
                 let cFilter = document.getElementById('admRepKelas').value;
                 if(cFilter !== 'all') targetClasses = [cFilter];
 
@@ -3687,7 +3864,6 @@
                         <td class="px-4 py-2 text-xs">${i+1}</td>
                         <td class="px-4 py-2 text-xs font-bold text-mi-deep hover:underline">${t.namaKelompok}</td>
                         <td class="px-4 py-2 text-xs">${t.mudir}</td>
-                        <td class="px-4 py-2 text-xs">${t.pembimbing}</td>
                         <td class="px-4 py-2 text-center text-xs">${tStats.anggota}</td>
                         <td class="px-4 py-2 text-center text-xs">${tStats.harus}</td>
                         <td class="px-4 py-2 text-center text-xs font-bold text-green-600">${tStats.sudah}</td>
@@ -3727,12 +3903,12 @@
                 });
             } else if (appState.activeRepTab === 'kelas') {
                 cols = ["No", "Kelas", "Total Siswa", "Harus Finger", "Sudah Finger", "Belum Finger", "Persentase"];
-                let targetClasses = document.getElementById('admRepKelas').value !== 'all' ? [document.getElementById('admRepKelas').value] : CLASS_LIST;
+                let targetClasses = document.getElementById('admRepKelas').value !== 'all' ? [document.getElementById('admRepKelas').value] : db.classes;
                 dataset = targetClasses.map((c, i) => {
                     let cs = calculateFingerprintStats(start, end, c, document.getElementById('admRepTahsin').value);
                     return [i+1, c, cs.totalSiswa, cs.harusFinger, cs.sudahFinger, cs.belumFinger, cs.persentase+"%"];
                 });
-            if (appState.activeRepTab === 'tahsin') {
+            } else if (appState.activeRepTab === 'tahsin') {
                 cols = ["No", "Kelompok Tahsin", "Mudir", "Jml Anggota", "Harus Finger", "Sudah Finger", "Belum Finger", "Persentase"];
                 let targetTahsin = document.getElementById('admRepTahsin').value !== 'all' ? [db.kelompokTahsin.find(t=>t.id===document.getElementById('admRepTahsin').value)] : db.kelompokTahsin;
                 dataset = targetTahsin.map((t, i) => {
@@ -3740,25 +3916,21 @@
                     return [i+1, t.namaKelompok, t.mudir, tStats.anggota, tStats.harus, tStats.sudah, tStats.belum, tStats.persen+"%"];
                 });
             }
-            } else if (appState.activeRepTab === 'tahsin') {
-                const tbody = document.getElementById('tbody-rep-tahsin');
-                let targetTahsin = db.kelompokTahsin;
-                let tFilter = document.getElementById('admRepTahsin').value;
-                if(tFilter !== 'all') targetTahsin = targetTahsin.filter(t => t.id === tFilter);
 
-                tbody.innerHTML = targetTahsin.map((t, i) => {
-                    let tStats = stats.rankingTahsin.find(x => x.id === t.id) || { anggota: 0, harus: 0, sudah: 0, belum: 0, persen: 0 };
-                    return `<tr class="hover:bg-gray-50 cursor-pointer" onclick="openModalDetailTahsin('${t.id}')">
-                        <td class="px-4 py-2 text-xs">${i+1}</td>
-                        <td class="px-4 py-2 text-xs font-bold text-mi-deep hover:underline">${t.namaKelompok}</td>
-                        <td class="px-4 py-2 text-xs">${t.mudir}</td>
-                        <td class="px-4 py-2 text-center text-xs">${tStats.anggota}</td>
-                        <td class="px-4 py-2 text-center text-xs">${tStats.harus}</td>
-                        <td class="px-4 py-2 text-center text-xs font-bold text-green-600">${tStats.sudah}</td>
-                        <td class="px-4 py-2 text-center text-xs font-bold text-rose-600">${tStats.belum}</td>
-                        <td class="px-4 py-2 text-center text-xs text-blue-700">${tStats.persen}%</td>
-                    </tr>`;
-                }).join('');
+            if (type === 'excel') {
+                const wsData = [cols, ...dataset];
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Rekap Laporan");
+                XLSX.writeFile(wb, `Rekap-Laporan-Fingerprint-${getToday()}.xlsx`);
+            } else if (type === 'pdf') {
+                const { jsPDF } = window.jspdf; const doc = new jsPDF();
+                doc.setFontSize(14); doc.setFont("helvetica", "bold");
+                doc.text("SMP IT MENTARI ILMU", 14, 20);
+                doc.text(title, 14, 26);
+                
+                doc.autoTable({ head: [cols], body: dataset, startY: 35, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [18, 79, 71] } }); 
+                doc.save(`Rekap-Laporan-Fingerprint-${getToday()}.pdf`);
             }
         }
 

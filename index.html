@@ -555,6 +555,18 @@
                             </button>
                         </li>
 
+                        <li class="pt-4 pb-1"><span class="text-[10px] font-bold text-white/50 uppercase tracking-wider pl-3 sidebar-text">Kedisiplinan</span></li>
+                        <li>
+                            <button onclick="switchAdminMenu('input-poin')" id="nav-input-poin" class="admin-nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-white/70 hover:bg-white/10 hover:text-white">
+                                <i class="fa-solid fa-gavel w-5 text-center menu-icon"></i> <span class="sidebar-text">Input Poin</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="switchAdminMenu('rekap-poin')" id="nav-rekap-poin" class="admin-nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-white/70 hover:bg-white/10 hover:text-white">
+                                <i class="fa-solid fa-scale-balanced w-5 text-center menu-icon"></i> <span class="sidebar-text">Rekap Poin</span>
+                            </button>
+                        </li>
+
                         <li class="pt-4 pb-1"><span class="text-[10px] font-bold text-white/50 uppercase tracking-wider pl-3 sidebar-text">Laporan</span></li>
                         <li>
                             <button onclick="switchAdminMenu('laporan-rekap')" id="nav-laporan-rekap" class="admin-nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-white/70 hover:bg-white/10 hover:text-white">
@@ -764,7 +776,7 @@
                                             <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Mudir</th>
                                             <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Program/Jilid</th>
                                             <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Anggota</th>
-                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-24">Aksi</th>
+                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-32">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody-adm-tahsin" class="bg-white divide-y divide-gray-200"></tbody>
@@ -911,165 +923,191 @@
                         </div>
                     </div>
 
-                    <!-- MENU: LAPORAN REKAP -->
-                    <div id="admin-menu-laporan-rekap" class="admin-content-section hidden flex flex-col h-full">
+                    <!-- MENU: INPUT POIN -->
+                    <div id="admin-menu-input-poin" class="admin-content-section hidden flex flex-col h-full">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
-                            <!-- Filters -->
-                            <div class="p-4 border-b border-gray-200 bg-gray-50">
-                                <h3 class="text-sm font-bold text-gray-800 mb-3"><i class="fa-solid fa-filter text-mi-emerald mr-1"></i> Filter Laporan</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                            <div class="p-4 border-b border-gray-200 bg-gray-50 flex flex-col gap-4">
+                                <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg flex items-start gap-3">
+                                    <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
+                                    <div class="text-xs text-blue-800 leading-relaxed">
+                                        <b>Informasi:</b> Data siswa diambil otomatis dari <b>Data Belum Fingerprint</b> pada tanggal yang Anda pilih. Anda dapat menginput baru atau memperbarui poin dengan mencentang checkbox dan mengubah nilai pada kolom Poin.
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     <div>
-                                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Mulai Tanggal</label>
-                                        <input type="date" id="admRepStartDate" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:ring-mi-deep">
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Tanggal (Data BFP)</label>
+                                        <input type="date" id="ip-tgl" onchange="loadSiswaForPoin()" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Jenis Pelanggaran</label>
+                                        <input type="text" id="ip-jenis" value="Tidak Fingerprint" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep bg-gray-100 font-bold" readonly>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Sampai Tanggal</label>
-                                        <input type="date" id="admRepEndDate" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:ring-mi-deep">
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Nilai Poin</label>
+                                        <input type="number" id="ip-poin" value="-5" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep bg-gray-100 font-bold text-rose-600" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white px-4 py-3 border-b border-gray-200 flex justify-between items-center shrink-0">
+                                <span class="text-xs font-bold text-gray-600" id="ip-count-siswa">Menunggu pemilihan tanggal...</span>
+                                <button onclick="simpanInputPoinMassal()" id="btn-simpan-poin" disabled class="px-4 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
+                                    <i class="fa-solid fa-save mr-1"></i> Simpan Poin Terpilih
+                                </button>
+                            </div>
+
+                            <div class="overflow-auto flex-grow relative">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50 sticky top-0 z-10">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left w-12">
+                                                <input type="checkbox" id="ip-check-all" onchange="toggleCheckAllPoin(this)" class="w-4 h-4 text-mi-deep rounded border-gray-300 focus:ring-mi-deep cursor-pointer">
+                                            </th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">NIS</th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Siswa</th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th>
+                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-24 whitespace-nowrap">Poin</th>
+                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-32 whitespace-nowrap">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-input-poin" class="bg-white divide-y divide-gray-200">
+                                        <tr><td colspan="7" class="px-4 py-8 text-sm text-center text-gray-500">Pilih tanggal terlebih dahulu untuk memuat data siswa.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MENU: REKAP POIN -->
+                    <div id="admin-menu-rekap-poin" class="admin-content-section hidden flex flex-col h-full">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full overflow-hidden">
+                            <!-- Filter Section -->
+                            <div class="p-4 border-b border-gray-200 bg-gray-50 flex flex-col gap-3 shrink-0">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-1">
+                                    <h3 class="text-sm font-bold text-gray-800 flex items-center"><i class="fa-solid fa-filter text-mi-emerald mr-2"></i>Filter Rekap Poin</h3>
+                                    <div class="flex gap-2 w-full sm:w-auto">
+                                        <button onclick="refreshFilterRekapPoin()" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 rounded-lg text-xs font-bold hover:bg-gray-100 shadow-sm flex items-center justify-center flex-1 sm:flex-none"><i class="fa-solid fa-rotate mr-1.5"></i> Refresh</button>
+                                        <button onclick="resetFilterRekapPoin()" class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg text-xs font-bold hover:bg-gray-300 shadow-sm flex items-center justify-center flex-1 sm:flex-none"><i class="fa-solid fa-rotate-left mr-1.5"></i> Reset</button>
+                                        <button onclick="applyFilterRekapPoin()" class="px-4 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald shadow-sm flex items-center justify-center flex-1 sm:flex-none"><i class="fa-solid fa-check mr-1.5"></i> Terapkan Filter</button>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Mulai Tgl</label>
+                                        <input type="date" id="rp-start" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Kelas</label>
-                                        <select id="admRepKelas" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:ring-mi-deep">
+                                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Sampai Tgl</label>
+                                        <input type="date" id="rp-end" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Kelas</label>
+                                        <select id="rp-kelas" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
                                             <option value="all">Semua Kelas</option>
-                                            <!-- JS injected -->
                                         </select>
                                     </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Kelompok Tahsin</label>
-                                        <select id="admRepTahsin" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:ring-mi-deep">
-                                            <option value="all">Semua Kelompok</option>
-                                            <!-- JS injected -->
-                                        </select>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Cari Siswa / Pelanggaran</label>
+                                        <input type="text" id="rp-search" placeholder="Nama, NIS, Pelanggaran..." class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
                                     </div>
-                                    <div class="flex items-end gap-2">
-                                        <button onclick="generateAdminReport()" class="w-full bg-mi-deep text-white font-bold py-1.5 rounded-lg text-xs hover:bg-mi-emerald transition-colors">Terapkan</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Summary Cards Section -->
+                            <div class="px-4 pt-4 pb-3 bg-white shrink-0">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center bg-rose-50 text-rose-600 shrink-0">
+                                            <i class="fa-solid fa-calculator text-lg md:text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Total Poin</div>
+                                            <div class="text-xl md:text-2xl font-extrabold text-gray-800 leading-none" id="rp-sum-poin">0</div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center bg-amber-50 text-amber-600 shrink-0">
+                                            <i class="fa-solid fa-triangle-exclamation text-lg md:text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Total Pelanggaran</div>
+                                            <div class="text-xl md:text-2xl font-extrabold text-gray-800 leading-none" id="rp-sum-pelanggaran">0</div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center bg-blue-50 text-blue-600 shrink-0">
+                                            <i class="fa-solid fa-users text-lg md:text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Siswa Terlibat</div>
+                                            <div class="text-xl md:text-2xl font-extrabold text-gray-800 leading-none" id="rp-sum-siswa">0</div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center bg-emerald-50 text-mi-emerald shrink-0">
+                                            <i class="fa-solid fa-school text-lg md:text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Kelas Terlibat</div>
+                                            <div class="text-xl md:text-2xl font-extrabold text-gray-800 leading-none" id="rp-sum-kelas">0</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Summary -->
-                            <div class="p-4 border-b border-gray-200 grid grid-cols-2 md:grid-cols-6 gap-3">
-                                <div class="bg-gray-100 p-2 rounded text-center"><div class="text-[10px] text-gray-500 font-bold uppercase">Total Siswa</div><div class="text-lg font-bold text-gray-800" id="repSumSiswa">-</div></div>
-                                <div class="bg-gray-100 p-2 rounded text-center"><div class="text-[10px] text-gray-500 font-bold uppercase">Hari Aktif</div><div class="text-lg font-bold text-gray-800" id="repSumHari">-</div></div>
-                                <div class="bg-mi-mint p-2 rounded text-center border border-mi-emerald/30"><div class="text-[10px] text-mi-deep font-bold uppercase">Harus Finger</div><div class="text-lg font-bold text-mi-deep" id="repSumHarus">-</div></div>
-                                <div class="bg-green-50 p-2 rounded text-center border border-green-200"><div class="text-[10px] text-green-700 font-bold uppercase">Sudah Finger</div><div class="text-lg font-bold text-green-700" id="repSumSudah">-</div></div>
-                                <div class="bg-rose-50 p-2 rounded text-center border border-rose-200"><div class="text-[10px] text-rose-700 font-bold uppercase">Belum Finger</div><div class="text-lg font-bold text-rose-700" id="repSumBelum">-</div></div>
-                                <div class="bg-blue-50 p-2 rounded text-center border border-blue-200"><div class="text-[10px] text-blue-700 font-bold uppercase">Persentase</div><div class="text-lg font-bold text-blue-700" id="repSumPersen">-</div></div>
-                            </div>
-
-                            <!-- Tabs & Actions -->
-                            <div class="p-2 border-b border-gray-200 flex justify-between items-center bg-gray-50 shrink-0">
-                                <div class="flex gap-2">
-                                    <button onclick="switchRepTab('siswa')" id="btn-rep-siswa" class="px-4 py-1 rounded text-xs font-bold bg-mi-deep text-white">Rekap Siswa</button>
-                                    <button onclick="switchRepTab('kelas')" id="btn-rep-kelas" class="px-4 py-1 rounded text-xs font-bold bg-white border border-gray-300 text-gray-600 hover:bg-gray-100">Rekap Kelas</button>
-                                    <button onclick="switchRepTab('tahsin')" id="btn-rep-tahsin" class="px-4 py-1 rounded text-xs font-bold bg-white border border-gray-300 text-gray-600 hover:bg-gray-100">Rekap Tahsin</button>
+                            <!-- Action Bar & Tabs -->
+                            <div class="px-4 border-b border-gray-200 bg-gray-50 shrink-0 flex flex-col-reverse lg:flex-row lg:justify-between lg:items-end gap-3 pt-2">
+                                <div class="flex space-x-1 overflow-x-auto hide-scrollbar">
+                                    <button onclick="switchRpTab('riwayat')" id="tab-rp-riwayat" class="px-4 py-2.5 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-mi-deep bg-mi-mint text-mi-deep rounded-t-lg shadow-[0_-2px_4px_rgba(0,0,0,0.02)] flex items-center gap-2">
+                                        <i class="fa-solid fa-list-ul"></i> Riwayat
+                                    </button>
+                                    <button onclick="switchRpTab('harian')" id="tab-rp-harian" class="px-4 py-2.5 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-t-lg flex items-center gap-2">
+                                        <i class="fa-solid fa-calendar-days"></i> Rekap Harian
+                                    </button>
+                                    <button onclick="switchRpTab('siswa')" id="tab-rp-siswa" class="px-4 py-2.5 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-t-lg flex items-center gap-2">
+                                        <i class="fa-solid fa-user"></i> Rekap Siswa
+                                    </button>
+                                    <button onclick="switchRpTab('kelas')" id="tab-rp-kelas" class="px-4 py-2.5 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-t-lg flex items-center gap-2">
+                                        <i class="fa-solid fa-school"></i> Rekap Kelas
+                                    </button>
                                 </div>
-                                <div class="flex gap-2">
-                                    <button onclick="exportAdminReport('excel')" class="px-3 py-1 bg-white border border-blue-200 text-blue-700 rounded text-xs font-bold hover:bg-blue-50 shadow-sm"><i class="fa-solid fa-file-excel mr-1"></i> Excel</button>
-                                    <button onclick="exportAdminReport('pdf')" class="px-3 py-1 bg-white border border-rose-200 text-rose-700 rounded text-xs font-bold hover:bg-rose-50 shadow-sm"><i class="fa-solid fa-file-pdf mr-1"></i> PDF</button>
+                                <div class="flex items-center gap-2 pb-2 lg:pb-1.5 w-full lg:w-auto justify-between lg:justify-end">
+                                    <div class="flex items-center gap-2 border-r border-gray-300 pr-3 mr-1">
+                                        <span class="text-[10px] font-bold text-gray-500">Tampilkan:</span>
+                                        <select id="rp-limit" onchange="changeRpLimit(this.value)" class="border border-gray-300 rounded text-xs py-1 px-2 focus:outline-none focus:border-mi-deep bg-white">
+                                            <option value="10">10</option>
+                                            <option value="25" selected>25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="exportRekapPoin('excel')" class="px-3 py-1.5 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded border border-blue-200 text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                                        <button onclick="exportRekapPoin('pdf')" class="px-3 py-1.5 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded border border-rose-200 text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Content Area -->
                             <div class="overflow-auto flex-grow relative bg-white">
-                                <!-- Table Siswa -->
-                                <table class="min-w-full divide-y divide-gray-200" id="table-rep-siswa">
-                                    <thead class="bg-gray-100 sticky top-0 z-10 shadow-sm">
-                                        <tr>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">NIS</th>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Siswa</th>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Tahsin</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase">Harus Finger</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-green-600 uppercase">Sudah Finger</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-rose-600 uppercase">Belum Finger</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-blue-600 uppercase">Persentase</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody-rep-siswa" class="divide-y divide-gray-100"></tbody>
-                                </table>
-
-                                <!-- Table Kelas -->
-                                <table class="min-w-full divide-y divide-gray-200 hidden" id="table-rep-kelas">
-                                    <thead class="bg-gray-100 sticky top-0 z-10 shadow-sm">
-                                        <tr>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase">Total Siswa</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase">Harus Finger</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-green-600 uppercase">Sudah Finger</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-rose-600 uppercase">Belum Finger</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-blue-600 uppercase">Persentase</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody-rep-kelas" class="divide-y divide-gray-100"></tbody>
-                                </table>
-                                
-                                <!-- Table Tahsin -->
-                                <table class="min-w-full divide-y divide-gray-200 hidden" id="table-rep-tahsin">
-                                    <thead class="bg-gray-100 sticky top-0 z-10 shadow-sm">
-                                        <tr>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Kelompok Tahsin</th>
-                                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Mudir</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase">Jml Anggota</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase">Harus Finger</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-green-600 uppercase">Sudah Finger</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-rose-600 uppercase">Belum Finger</th>
-                                            <th class="px-4 py-2 text-center text-[10px] font-bold text-blue-600 uppercase">Persentase</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody-rep-tahsin" class="divide-y divide-gray-100"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- MENU: MANAGE AKUN -->
-                    <div id="admin-menu-akun" class="admin-content-section hidden">
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-                            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-                                <h3 class="text-sm font-bold text-gray-800">Manajemen Akun</h3>
-                                <button onclick="openModalAkun('add')" class="px-3 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors"><i class="fa-solid fa-plus mr-1"></i> Tambah Akun</button>
-                            </div>
-                            <div class="overflow-x-auto">
                                 <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">No</th>
-                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Username</th>
-                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Lengkap</th>
-                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Role</th>
-                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Aksi</th>
-                                        </tr>
+                                    <thead class="bg-gray-50 sticky top-0 z-10 shadow-sm" id="thead-rekap-poin">
+                                        <!-- Header injected via JS based on active tab -->
                                     </thead>
-                                    <tbody id="tbody-adm-akun" class="bg-white divide-y divide-gray-200"></tbody>
+                                    <tbody id="tbody-rekap-poin" class="divide-y divide-gray-100">
+                                        <!-- Content injected via JS -->
+                                    </tbody>
                                 </table>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- MENU: PENGATURAN -->
-                    <div id="admin-menu-pengaturan" class="admin-content-section hidden">
-                        <div class="max-w-2xl bg-white rounded-xl shadow-sm border border-gray-100">
-                            <div class="p-4 border-b border-gray-200">
-                                <h3 class="text-sm font-bold text-gray-800">Pengaturan Sistem</h3>
-                            </div>
-                            <div class="p-5 space-y-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">Nama Instansi</label>
-                                    <input type="text" value="SMP IT MENTARI ILMU" disabled class="w-full border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-500">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-600 mb-1">Judul Dashboard</label>
-                                    <input type="text" value="Monitoring Siswa Belum Fingerprint" disabled class="w-full border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-sm text-gray-500">
-                                </div>
-                                <div class="pt-4 border-t border-gray-100 flex justify-end">
-                                    <button class="px-5 py-2 bg-mi-deep text-white text-sm font-bold rounded-lg hover:bg-mi-emerald transition-colors" onclick="Swal.fire('Info', 'Pengaturan dikunci pada versi dummy ini.', 'info')">Simpan Pengaturan</button>
-                                </div>
-                                <div class="pt-4 border-t border-gray-100 mt-8">
-                                    <h4 class="text-xs font-bold text-red-600 mb-2">Zona Berbahaya</h4>
-                                    <button onclick="resetDummyData()" class="px-4 py-2 bg-red-50 text-red-600 border border-red-200 text-xs font-bold rounded-lg hover:bg-red-100 transition-colors"><i class="fa-solid fa-rotate mr-1"></i> Reset Data ke Bawaan (Demo)</button>
+                            <!-- Pagination Footer -->
+                            <div class="p-3 border-t border-gray-200 bg-gray-50 flex justify-between items-center shrink-0">
+                                <span class="text-xs font-bold text-gray-500" id="rp-page-info">Menampilkan 0-0 dari 0 data</span>
+                                <div class="flex border border-gray-300 rounded overflow-hidden shadow-sm">
+                                    <button onclick="changeRpPage(-1)" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 transition-colors border-r border-gray-300"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                    <span id="rp-page-number" class="px-4 py-1.5 bg-gray-50 text-xs font-bold text-mi-deep flex items-center justify-center min-w-[40px]">1</span>
+                                    <button onclick="changeRpPage(1)" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 transition-colors border-l border-gray-300"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -1605,6 +1643,144 @@
         </div>
     </div>
 
+    <!-- MODAL: DETAIL POIN SISWA -->
+    <div id="modalDetailPoinSiswa" class="modal-container hidden z-[110]">
+        <div class="absolute inset-0 modal-overlay" onclick="closeModal('modalDetailPoinSiswa')"></div>
+        <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-4xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-mi-deep text-white shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-mi-mint text-mi-deep rounded-full flex items-center justify-center text-lg font-bold"><i class="fa-solid fa-user-shield"></i></div>
+                    <div>
+                        <h3 class="text-base font-bold leading-tight" id="detPoinSiswaName">Nama Siswa</h3>
+                        <p class="text-[11px] text-white/80"><span id="detPoinSiswaNis" class="font-mono"></span> • <span id="detPoinSiswaKelas"></span></p>
+                    </div>
+                </div>
+                <button onclick="closeModal('modalDetailPoinSiswa')" class="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-4 bg-gray-50 shrink-0 border-b border-gray-200 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase mb-1">Filter Aktif</div>
+                    <div class="text-xs font-bold text-mi-deep" id="detPoinSiswaFilter">-</div>
+                </div>
+                <div class="bg-white border border-amber-200 rounded-xl p-3 text-center shadow-sm bg-amber-50">
+                    <div class="text-[10px] font-bold text-amber-700 uppercase mb-1">Total Pelanggaran</div>
+                    <div class="text-xl font-extrabold text-amber-700" id="detPoinSiswaCount">-</div>
+                </div>
+                <div class="bg-white border border-rose-200 rounded-xl p-3 text-center shadow-sm bg-rose-50 sm:col-span-2">
+                    <div class="text-[10px] font-bold text-rose-700 uppercase mb-1">Total Akumulasi Poin</div>
+                    <div class="text-xl font-extrabold text-rose-700" id="detPoinSiswaTotal">-</div>
+                </div>
+            </div>
+
+            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 shrink-0">Riwayat Pelanggaran (Berdasarkan Filter)</div>
+            <div class="overflow-auto flex-grow bg-white">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50 sticky top-0">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Tanggal</th>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Jenis Pelanggaran</th>
+                            <th class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase">Poin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-det-poin-siswa" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DETAIL REKAP HARIAN (NEW) -->
+    <div id="modalDetailRpHarian" class="modal-container hidden z-[110]">
+        <div class="absolute inset-0 modal-overlay" onclick="closeModal('modalDetailRpHarian')"></div>
+        <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-4xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-mi-deep text-white shrink-0">
+                <h3 class="text-base font-bold"><i class="fa-solid fa-calendar-day mr-2 text-mi-mint"></i> Detail Poin Kedisiplinan</h3>
+                <button onclick="closeModal('modalDetailRpHarian')" class="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-4 bg-gray-50 shrink-0 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div>
+                    <div class="text-[10px] font-bold text-gray-500 uppercase">Tanggal</div>
+                    <div class="text-sm font-extrabold text-mi-deep" id="detRpHarianTgl">-</div>
+                </div>
+                <div class="flex gap-3 text-center">
+                    <div class="bg-white border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm">
+                        <div class="text-[9px] font-bold text-gray-500 uppercase">Siswa Terlibat</div>
+                        <div class="text-sm font-extrabold text-blue-700" id="detRpHarianSiswa">-</div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm">
+                        <div class="text-[9px] font-bold text-gray-500 uppercase">Total Pelanggaran</div>
+                        <div class="text-sm font-extrabold text-amber-700" id="detRpHarianCount">-</div>
+                    </div>
+                    <div class="bg-rose-50 border border-rose-200 rounded-lg px-3 py-1.5 shadow-sm">
+                        <div class="text-[9px] font-bold text-rose-700 uppercase">Total Poin</div>
+                        <div class="text-sm font-extrabold text-rose-700" id="detRpHarianTotal">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 shrink-0">Daftar Pemberian Poin</div>
+            <div class="overflow-auto flex-grow bg-white">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50 sticky top-0">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">NIS</th>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Siswa</th>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Pelanggaran</th>
+                            <th class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase">Poin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-det-rp-harian" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DETAIL POIN KELAS -->
+    <div id="modalDetailPoinKelas" class="modal-container hidden z-[110]">
+        <div class="absolute inset-0 modal-overlay" onclick="closeModal('modalDetailPoinKelas')"></div>
+        <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-3xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-mi-deep text-white shrink-0">
+                <h3 class="text-base font-bold"><i class="fa-solid fa-users-viewfinder mr-2 text-mi-mint"></i> Rekap Pelanggaran Kelas: <span id="detPoinKelasTitle"></span></h3>
+                <button onclick="closeModal('modalDetailPoinKelas')" class="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-4 bg-gray-50 shrink-0 border-b border-gray-200 grid grid-cols-3 gap-3">
+                <div class="bg-white border border-blue-200 rounded-xl p-3 text-center shadow-sm bg-blue-50">
+                    <div class="text-[10px] font-bold text-blue-700 uppercase mb-1">Siswa Terlibat</div>
+                    <div class="text-lg font-extrabold text-blue-700" id="detPoinKelasSiswa">-</div>
+                </div>
+                <div class="bg-white border border-amber-200 rounded-xl p-3 text-center shadow-sm bg-amber-50">
+                    <div class="text-[10px] font-bold text-amber-700 uppercase mb-1">Total Pelanggaran</div>
+                    <div class="text-lg font-extrabold text-amber-700" id="detPoinKelasCount">-</div>
+                </div>
+                <div class="bg-white border border-rose-200 rounded-xl p-3 text-center shadow-sm bg-rose-50">
+                    <div class="text-[10px] font-bold text-rose-700 uppercase mb-1">Total Poin</div>
+                    <div class="text-lg font-extrabold text-rose-700" id="detPoinKelasTotal">-</div>
+                </div>
+            </div>
+
+            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 shrink-0">Daftar Siswa (Berdasarkan Filter)</div>
+            <div class="overflow-auto flex-grow bg-white">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50 sticky top-0">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">NIS</th>
+                            <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Siswa</th>
+                            <th class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase">Pelanggaran</th>
+                            <th class="px-4 py-2 text-center text-[10px] font-bold text-gray-500 uppercase">Total Poin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-det-poin-kelas" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // ==========================================
@@ -1661,6 +1837,7 @@
             admSiswaPage: 1, admSiswaLimit: 50, admSiswaSearch: '', admSiswaKelas: 'all',
             admFpPage: 1, admFpLimit: 20, admFpSearch: '', admFpKelas: 'all', admFpDate: '',
             admRepStats: null, // Holds stats for admin rekap laporan
+            activeRekapPoinTab: 'siswa', // 'riwayat' | 'siswa' | 'kelas'
             
             importBuffer: [],
             importValidCount: 0,
@@ -1672,6 +1849,7 @@
             classes: [...CLASS_LIST],
             kelompokTahsin: [],
             bfp: [], // Belum Fingerprint Records
+            poin: [], // Discipline Point Records
             users: []
         };
 
@@ -1689,6 +1867,7 @@
             const lsUsers = localStorage.getItem('mi_users');
             const lsTahsin = localStorage.getItem('mi_tahsin');
             const lsClasses = localStorage.getItem('mi_classes');
+            const lsPoin = localStorage.getItem('mi_poin');
 
             if (lsStudents && lsBfp && lsUsers && lsTahsin) {
                 db.students = JSON.parse(lsStudents);
@@ -1696,6 +1875,7 @@
                 db.users = JSON.parse(lsUsers);
                 db.kelompokTahsin = JSON.parse(lsTahsin);
                 if(lsClasses) db.classes = JSON.parse(lsClasses);
+                if(lsPoin) db.poin = JSON.parse(lsPoin);
             } else {
                 generateDummyData();
             }
@@ -1706,6 +1886,7 @@
         function generateDummyData() {
             db.students = [];
             db.bfp = [];
+            db.poin = [];
             db.kelompokTahsin = [];
             db.classes = [...CLASS_LIST];
             db.users = [
@@ -1804,6 +1985,7 @@
             localStorage.setItem('mi_users', JSON.stringify(db.users));
             localStorage.setItem('mi_tahsin', JSON.stringify(db.kelompokTahsin));
             localStorage.setItem('mi_classes', JSON.stringify(db.classes));
+            localStorage.setItem('mi_poin', JSON.stringify(db.poin));
         }
 
         function resetDummyData() {
@@ -1818,6 +2000,7 @@
                     localStorage.removeItem('mi_users');
                     localStorage.removeItem('mi_tahsin');
                     localStorage.removeItem('mi_classes');
+                    localStorage.removeItem('mi_poin');
                     initData();
                     if(appState.currentView === 'public') {
                         applyFilters();
@@ -1837,18 +2020,20 @@
             const admRepK = document.getElementById('admRepKelas');
             const admFKAnggota = document.getElementById('adm-filter-kelas-anggota');
             const admFKPilih = document.getElementById('adm-filter-kelas-pilih-siswa');
+            const rpKelas = document.getElementById('rp-kelas');
             
             let opts = '';
             db.classes.forEach(c => opts += `<option value="${c}">${c}</option>`);
             
             let allOpt = '<option value="all">Semua Kelas</option>';
-            fKelas.innerHTML = allOpt + opts;
-            admFKSiswa.innerHTML = allOpt + opts;
-            admFKFp.innerHTML = allOpt + opts;
-            admRepK.innerHTML = allOpt + opts;
-            if(admFKAnggota) admFKAnggota.innerHTML = allOpt + opts;
-            if(admFKPilih) admFKPilih.innerHTML = allOpt + opts;
-            if(admFormK) admFormK.innerHTML = opts;
+            if (fKelas) fKelas.innerHTML = allOpt + opts;
+            if (admFKSiswa) admFKSiswa.innerHTML = allOpt + opts;
+            if (admFKFp) admFKFp.innerHTML = allOpt + opts;
+            if (admRepK) admRepK.innerHTML = allOpt + opts;
+            if (admFKAnggota) admFKAnggota.innerHTML = allOpt + opts;
+            if (admFKPilih) admFKPilih.innerHTML = allOpt + opts;
+            if (admFormK) admFormK.innerHTML = opts;
+            if (rpKelas) rpKelas.innerHTML = allOpt + opts;
 
             // Tahsin Dropdowns
             const fTahsin = document.getElementById('filterTahsin');
@@ -1859,9 +2044,9 @@
             db.kelompokTahsin.forEach(t => tOpts += `<option value="${t.id}">${t.namaKelompok}</option>`);
             
             let allTOpt = '<option value="all">Semua Kelompok</option>';
-            fTahsin.innerHTML = allTOpt + tOpts;
-            admRepT.innerHTML = allTOpt + tOpts;
-            if(admFormT) admFormT.innerHTML = '<option value="">-- Pilih Kelompok --</option>' + tOpts;
+            if (fTahsin) fTahsin.innerHTML = allTOpt + tOpts;
+            if (admRepT) admRepT.innerHTML = allTOpt + tOpts;
+            if (admFormT) admFormT.innerHTML = '<option value="">-- Pilih Kelompok --</option>' + tOpts;
         }
 
         function getTahsinInfo(tahsinId) {
@@ -2846,6 +3031,7 @@
             const titles = {
                 'dashboard': 'Dashboard', 'siswa': 'Master Data Siswa', 'kelas': 'Master Kelas', 'tahsin': 'Kelompok Tahsin',
                 'input': 'Input Fingerprint', 'data-fp': 'Data Belum Fingerprint', 'import': 'Import Data',
+                'input-poin': 'Input Poin Kedisiplinan', 'rekap-poin': 'Rekap Poin Kedisiplinan',
                 'laporan-rekap': 'Rekap Laporan', 'akun': 'Manajemen Akun', 'pengaturan': 'Pengaturan Sistem'
             };
             document.getElementById('admin-page-title').innerText = titles[menuId] || 'Admin';
@@ -2863,10 +3049,19 @@
                 if(!appState.admFpDate) document.getElementById('adm-filter-tgl-fp').value = getToday();
                 renderTableAdminFP();
             }
+            else if(menuId === 'input-poin') {
+                document.getElementById('ip-tgl').value = getToday();
+                loadSiswaForPoin();
+            }
+            else if(menuId === 'rekap-poin') {
+                applyFilterRekapPoin();
+            }
             else if(menuId === 'laporan-rekap') {
-                document.getElementById('admRepStartDate').value = getToday();
-                document.getElementById('admRepEndDate').value = getToday();
-                generateAdminReport();
+                let admRepStart = document.getElementById('admRepStartDate');
+                if (admRepStart) admRepStart.value = getToday();
+                let admRepEnd = document.getElementById('admRepEndDate');
+                if (admRepEnd) admRepEnd.value = getToday();
+                if (typeof generateAdminReport === "function") generateAdminReport();
             }
             else if(menuId === 'akun') renderTableAdminAkun();
         }
@@ -3368,7 +3563,7 @@
                     <td class="px-4 py-3 text-xs text-gray-800">${t.mudir}</td>
                     <td class="px-4 py-3 text-xs text-gray-600">${t.program} - ${t.jilid}</td>
                     <td class="px-4 py-3 text-center text-xs font-bold text-blue-700">${anggota} Siswa</td>
-                    <td class="px-4 py-3 text-center">
+                    <td class="px-4 py-3 text-center whitespace-nowrap">
                         <button onclick="editTahsin('${t.id}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-1.5 rounded mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                         <button onclick="kelolaAnggotaTahsin('${t.id}')" class="text-mi-emerald hover:text-mi-deep bg-mi-mint p-1.5 rounded mr-1" title="Kelola Anggota"><i class="fa-solid fa-users text-xs"></i></button>
                         <button onclick="hapusTahsin('${t.id}')" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
@@ -4030,6 +4225,489 @@
                     renderTableAdminAkun();
                 }
             });
+        }
+
+        // ==========================================
+        // 8.5. KEDISIPLINAN: INPUT & REKAP POIN
+        // ==========================================
+        
+        function loadSiswaForPoin() {
+            let tgl = document.getElementById('ip-tgl').value;
+            let jenis = document.getElementById('ip-jenis').value;
+            let defPoin = document.getElementById('ip-poin').value;
+            const tbody = document.getElementById('tbody-input-poin');
+            const btnSave = document.getElementById('btn-simpan-poin');
+            const checkAll = document.getElementById('ip-check-all');
+            
+            checkAll.checked = false;
+
+            if(!tgl) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-sm text-center text-gray-500">Pilih tanggal terlebih dahulu untuk memuat data siswa.</td></tr>`;
+                document.getElementById('ip-count-siswa').innerText = `Menunggu pemilihan tanggal...`;
+                btnSave.disabled = true;
+                return;
+            }
+
+            // Dapatkan siswa yang ada di BFP pada tanggal tersebut
+            let bfpOnDate = db.bfp.filter(r => r.tanggal === tgl);
+
+            // Urutkan berdasarkan nama
+            bfpOnDate.sort((a,b) => a.nama.localeCompare(b.nama));
+
+            document.getElementById('ip-count-siswa').innerText = `Tersedia: ${bfpOnDate.length} Siswa (Data BFP)`;
+
+            if (bfpOnDate.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-sm text-center text-gray-500">Tidak ada catatan Belum Fingerprint pada tanggal ini.</td></tr>`;
+                btnSave.disabled = true;
+                return;
+            }
+
+            btnSave.disabled = false;
+            tbody.innerHTML = bfpOnDate.map((s, i) => {
+                let existingPoint = db.poin.find(p => p.tanggal === tgl && p.nis === s.nis && p.pelanggaran === jenis);
+                let currentPoin = existingPoint ? existingPoint.poin : defPoin;
+                let statusBadge = existingPoint ? `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold border border-blue-200">Sudah Input</span>` : `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold border border-gray-200">Belum Input</span>`;
+                
+                return `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-2">
+                        <input type="checkbox" value="${s.nis}" class="cb-poin-siswa w-4 h-4 text-mi-deep rounded border-gray-300 focus:ring-mi-deep cursor-pointer" onchange="checkPoinSelection()">
+                    </td>
+                    <td class="px-4 py-2 text-xs text-gray-500">${i+1}</td>
+                    <td class="px-4 py-2 text-xs font-mono font-bold">${s.nis}</td>
+                    <td class="px-4 py-2 text-xs font-bold text-gray-800">${s.nama}</td>
+                    <td class="px-4 py-2 text-xs text-gray-600">${s.kelas}</td>
+                    <td class="px-4 py-2 text-center whitespace-nowrap">
+                        <input type="number" id="poin-val-${s.nis}" value="${currentPoin}" class="w-16 border border-gray-300 rounded px-2 py-1 text-xs text-center font-bold text-rose-600 focus:outline-none focus:border-mi-deep" onchange="document.querySelector('.cb-poin-siswa[value=\\'${s.nis}\\']').checked = true; checkPoinSelection();">
+                    </td>
+                    <td class="px-4 py-2 text-center whitespace-nowrap">${statusBadge}</td>
+                </tr>
+            `}).join('');
+        }
+
+        function toggleCheckAllPoin(source) {
+            let checkboxes = document.querySelectorAll('.cb-poin-siswa');
+            checkboxes.forEach(cb => cb.checked = source.checked);
+        }
+
+        function checkPoinSelection() {
+            let total = document.querySelectorAll('.cb-poin-siswa').length;
+            let checked = document.querySelectorAll('.cb-poin-siswa:checked').length;
+            document.getElementById('ip-check-all').checked = (total === checked && total > 0);
+        }
+
+        function simpanInputPoinMassal() {
+            let tgl = document.getElementById('ip-tgl').value;
+            let jenis = document.getElementById('ip-jenis').value;
+
+            let checkedCbs = document.querySelectorAll('.cb-poin-siswa:checked');
+            if(checkedCbs.length === 0) return Swal.fire('Peringatan', 'Silakan pilih minimal satu siswa dengan mencentang kotak yang tersedia.', 'warning');
+
+            Swal.fire({
+                title: 'Konfirmasi Simpan Poin',
+                text: `Anda akan menyimpan atau memperbarui poin untuk ${checkedCbs.length} siswa terpilih. Lanjutkan?`,
+                icon: 'question', showCancelButton: true, confirmButtonColor: '#124F47'
+            }).then(res => {
+                if(res.isConfirmed) {
+                    let successCount = 0;
+                    let updateCount = 0;
+                    checkedCbs.forEach(cb => {
+                        let nis = cb.value;
+                        let poinVal = parseInt(document.getElementById(`poin-val-${nis}`).value) || 0;
+                        let s = db.students.find(x => x.nis === nis);
+                        
+                        if(s) {
+                            let existingIdx = db.poin.findIndex(p => p.tanggal === tgl && p.nis === nis && p.pelanggaran === jenis);
+                            if(existingIdx > -1) {
+                                db.poin[existingIdx].poin = poinVal;
+                                updateCount++;
+                            } else {
+                                db.poin.push({
+                                    id: `POIN_${Date.now()}_${Math.random().toString(36).substr(2,6)}`,
+                                    tanggal: tgl,
+                                    nis: nis,
+                                    nama: s.nama,
+                                    kelas: s.kelas,
+                                    pelanggaran: jenis,
+                                    poin: poinVal
+                                });
+                                successCount++;
+                            }
+                        }
+                    });
+
+                    saveData();
+                    Swal.fire('Berhasil', `${successCount} poin disimpan, ${updateCount} poin diperbarui.`, 'success');
+                    loadSiswaForPoin(); // Refresh tabel
+                }
+            });
+        }
+
+        // ==========================================
+        // LOGIKA REKAP POIN (NEW)
+        // ==========================================
+        appState.rp = {
+            page: 1, limit: 25, activeTab: 'riwayat',
+            filteredData: [], aggregatedData: []
+        };
+
+        function resetFilterRekapPoin() {
+            document.getElementById('rp-start').value = '';
+            document.getElementById('rp-end').value = '';
+            document.getElementById('rp-kelas').value = 'all';
+            document.getElementById('rp-search').value = '';
+            applyFilterRekapPoin();
+        }
+
+        function refreshFilterRekapPoin() {
+            Swal.fire({ title: 'Memuat Ulang...', html: '<div class="loader mt-2"></div>', showConfirmButton: false, timer: 500 }).then(() => {
+                let lsPoin = localStorage.getItem('mi_poin');
+                if(lsPoin) db.poin = JSON.parse(lsPoin);
+                applyFilterRekapPoin();
+                Swal.fire({toast:true, position:'top-end', icon:'success', title:'Data diperbarui', showConfirmButton:false, timer:1500});
+            });
+        }
+
+        function applyFilterRekapPoin() {
+            let start = document.getElementById('rp-start').value;
+            let end = document.getElementById('rp-end').value;
+            let kelas = document.getElementById('rp-kelas').value;
+            let search = document.getElementById('rp-search').value.toLowerCase();
+
+            // 1. Filter the base DB
+            appState.rp.filteredData = db.poin.filter(p => {
+                let matchDate = (!start || p.tanggal >= start) && (!end || p.tanggal <= end);
+                let matchKelas = (kelas === 'all' || p.kelas === kelas);
+                let matchSearch = (!search || p.nama.toLowerCase().includes(search) || p.nis.includes(search) || p.pelanggaran.toLowerCase().includes(search));
+                return matchDate && matchKelas && matchSearch;
+            });
+
+            // 2. Calculate Global Summary Box
+            let totalPoin = 0;
+            let uSiswa = new Set();
+            let uKelas = new Set();
+
+            appState.rp.filteredData.forEach(p => {
+                totalPoin += p.poin;
+                uSiswa.add(p.nis);
+                uKelas.add(p.kelas);
+            });
+
+            document.getElementById('rp-sum-poin').innerText = totalPoin;
+            document.getElementById('rp-sum-pelanggaran').innerText = appState.rp.filteredData.length;
+            document.getElementById('rp-sum-siswa').innerText = uSiswa.size;
+            document.getElementById('rp-sum-kelas').innerText = uKelas.size;
+
+            // 3. Reset Pagination & Render
+            appState.rp.page = 1;
+            renderActiveRpTab();
+        }
+
+        function switchRpTab(tabId) {
+            appState.rp.activeTab = tabId;
+            appState.rp.page = 1; // Reset to page 1 on tab change
+            
+            // Update Tab UI visually
+            ['riwayat', 'harian', 'siswa', 'kelas'].forEach(id => {
+                let btn = document.getElementById(`tab-rp-${id}`);
+                if(id === tabId) {
+                    btn.className = 'px-4 py-2.5 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-mi-deep bg-mi-mint text-mi-deep rounded-t-lg shadow-[0_-2px_4px_rgba(0,0,0,0.02)] flex items-center gap-2';
+                } else {
+                    btn.className = 'px-4 py-2.5 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-t-lg flex items-center gap-2';
+                }
+            });
+            
+            renderActiveRpTab();
+        }
+
+        function changeRpLimit(val) {
+            appState.rp.limit = parseInt(val);
+            appState.rp.page = 1;
+            renderActiveRpTab();
+        }
+
+        function changeRpPage(dir) {
+            let maxPage = Math.ceil(appState.rp.aggregatedData.length / appState.rp.limit);
+            appState.rp.page += dir;
+            if (appState.rp.page < 1) appState.rp.page = 1;
+            if (appState.rp.page > maxPage) appState.rp.page = maxPage || 1;
+            renderActiveRpTab(false); // false means don't recalculate aggregation, just slice and render
+        }
+
+        function renderActiveRpTab(recalculate = true) {
+            const thead = document.getElementById('thead-rekap-poin');
+            
+            if (recalculate) {
+                let fData = appState.rp.filteredData;
+                
+                if (appState.rp.activeTab === 'riwayat') {
+                    thead.innerHTML = `<tr><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Tanggal</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">NIS</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Siswa</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-24">Poin</th></tr>`;
+                    
+                    appState.rp.aggregatedData = [...fData].sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+                
+                } else if (appState.rp.activeTab === 'harian') {
+                    thead.innerHTML = `<tr><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Tanggal</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Jml Pelanggaran</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Siswa Terlibat</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Total Poin</th></tr>`;
+                    
+                    let agg = {};
+                    fData.forEach(p => {
+                        if(!agg[p.tanggal]) agg[p.tanggal] = { tanggal: p.tanggal, count: 0, total: 0, uSiswa: new Set() };
+                        agg[p.tanggal].count++;
+                        agg[p.tanggal].total += p.poin;
+                        agg[p.tanggal].uSiswa.add(p.nis);
+                    });
+                    appState.rp.aggregatedData = Object.values(agg).sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+                
+                } else if (appState.rp.activeTab === 'siswa') {
+                    thead.innerHTML = `<tr><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">NIS</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Siswa</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Jml Pelanggaran</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Total Akumulasi Poin</th></tr>`;
+                    
+                    let agg = {};
+                    fData.forEach(p => {
+                        if(!agg[p.nis]) agg[p.nis] = { nis: p.nis, nama: p.nama, kelas: p.kelas, count: 0, total: 0 };
+                        agg[p.nis].count++;
+                        agg[p.nis].total += p.poin;
+                    });
+                    appState.rp.aggregatedData = Object.values(agg).sort((a,b) => b.count !== a.count ? b.count - a.count : a.total - b.total);
+                
+                } else if (appState.rp.activeTab === 'kelas') {
+                    thead.innerHTML = `<tr><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Siswa Terlibat</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Jml Pelanggaran</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Total Poin</th></tr>`;
+                    
+                    let agg = {};
+                    fData.forEach(p => {
+                        if(!agg[p.kelas]) agg[p.kelas] = { kelas: p.kelas, count: 0, total: 0, uSiswa: new Set() };
+                        agg[p.kelas].count++;
+                        agg[p.kelas].total += p.poin;
+                        agg[p.kelas].uSiswa.add(p.nis);
+                    });
+                    appState.rp.aggregatedData = Object.values(agg).sort((a,b) => b.count - a.count);
+                }
+            }
+
+            renderPaginationRp();
+        }
+
+        function renderPaginationRp() {
+            let dataArr = appState.rp.aggregatedData;
+            let start = (appState.rp.page - 1) * appState.rp.limit;
+            let end = start + appState.rp.limit;
+            let pageData = dataArr.slice(start, end);
+
+            const tbody = document.getElementById('tbody-rekap-poin');
+            
+            if(dataArr.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-sm text-center text-gray-500">Tidak ada data pada filter atau tab ini.</td></tr>`;
+                document.getElementById('rp-page-info').innerText = "Menampilkan 0-0 dari 0 data";
+                document.getElementById('rp-page-number').innerText = "1";
+                return;
+            }
+
+            let html = '';
+            if (appState.rp.activeTab === 'riwayat') {
+                html = pageData.map((d, i) => `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-2 text-xs text-gray-500">${start + i + 1}</td>
+                        <td class="px-4 py-2 text-xs font-semibold text-gray-700">${fDateIndo(d.tanggal)}</td>
+                        <td class="px-4 py-2 text-xs font-mono text-gray-500">${d.nis}</td>
+                        <td class="px-4 py-2 text-xs font-bold text-mi-deep">${d.nama}</td>
+                        <td class="px-4 py-2 text-xs text-gray-600">${d.kelas}</td>
+                        <td class="px-4 py-2 text-center text-xs font-bold text-rose-600">${d.poin}</td>
+                    </tr>
+                `).join('');
+            } else if (appState.rp.activeTab === 'harian') {
+                html = pageData.map((d, i) => `
+                    <tr class="hover:bg-gray-50 cursor-pointer transition-colors" onclick="openModalDetailRpHarian('${d.tanggal}')">
+                        <td class="px-4 py-2 text-xs text-gray-500">${start + i + 1}</td>
+                        <td class="px-4 py-2 text-xs font-bold text-mi-deep hover:underline">${fDateIndo(d.tanggal)}</td>
+                        <td class="px-4 py-2 text-center text-xs font-bold text-amber-700">${d.count}</td>
+                        <td class="px-4 py-2 text-center text-xs text-blue-700 font-bold">${d.uSiswa.size} Siswa</td>
+                        <td class="px-4 py-2 text-center text-xs font-bold text-rose-600"><span class="bg-rose-50 border border-rose-100 px-2 py-0.5 rounded">${d.total} Poin</span></td>
+                    </tr>
+                `).join('');
+            } else if (appState.rp.activeTab === 'siswa') {
+                html = pageData.map((d, i) => `
+                    <tr class="hover:bg-gray-50 cursor-pointer transition-colors" onclick="openModalDetailPoinSiswa('${d.nis}')">
+                        <td class="px-4 py-2 text-xs text-gray-500">${start + i + 1}</td>
+                        <td class="px-4 py-2 text-xs font-mono text-gray-500">${d.nis}</td>
+                        <td class="px-4 py-2 text-xs font-bold text-mi-deep hover:underline">${d.nama}</td>
+                        <td class="px-4 py-2 text-xs text-gray-600">${d.kelas}</td>
+                        <td class="px-4 py-2 text-center text-xs font-bold"><span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded">${d.count} Kali</span></td>
+                        <td class="px-4 py-2 text-center text-xs font-bold text-rose-600"><span class="bg-rose-50 border border-rose-100 px-2 py-0.5 rounded">${d.total} Poin</span></td>
+                    </tr>
+                `).join('');
+            } else if (appState.rp.activeTab === 'kelas') {
+                html = pageData.map((d, i) => `
+                    <tr class="hover:bg-gray-50 cursor-pointer transition-colors" onclick="openModalDetailPoinKelas('${d.kelas}')">
+                        <td class="px-4 py-2 text-xs text-gray-500">${start + i + 1}</td>
+                        <td class="px-4 py-2 text-xs font-bold text-mi-deep hover:underline">${d.kelas}</td>
+                        <td class="px-4 py-2 text-center text-xs font-bold text-blue-700">${d.uSiswa.size} Siswa</td>
+                        <td class="px-4 py-2 text-center text-xs font-bold text-amber-700">${d.count} Kali</td>
+                        <td class="px-4 py-2 text-center text-xs font-bold text-rose-600"><span class="bg-rose-50 border border-rose-100 px-2 py-0.5 rounded">${d.total} Poin</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            tbody.innerHTML = html;
+            document.getElementById('rp-page-info').innerText = `Menampilkan ${start + 1}-${Math.min(end, dataArr.length)} dari ${dataArr.length} data`;
+            document.getElementById('rp-page-number').innerText = appState.rp.page;
+        }
+
+        // Export Data Rekap Poin
+        function exportRekapPoin(type) {
+            let dataArr = appState.rp.aggregatedData;
+            if(dataArr.length === 0) return Swal.fire('Kosong', 'Tidak ada data untuk diexport', 'info');
+
+            let dataset = [];
+            let cols = [];
+            let reportTitle = "";
+            let tab = appState.rp.activeTab;
+
+            if (tab === 'riwayat') {
+                reportTitle = "REKAP POIN KEDISIPLINAN - RIWAYAT";
+                cols = ["No", "Tanggal", "NIS", "Nama Siswa", "Kelas", "Pelanggaran", "Poin"];
+                dataset = dataArr.map((d, i) => [i+1, fDateIndo(d.tanggal), d.nis, d.nama, d.kelas, d.pelanggaran, d.poin]);
+            } else if (tab === 'harian') {
+                reportTitle = "REKAP POIN KEDISIPLINAN - HARIAN";
+                cols = ["No", "Tanggal", "Jml Pelanggaran", "Siswa Terlibat", "Total Poin"];
+                dataset = dataArr.map((d, i) => [i+1, fDateIndo(d.tanggal), d.count, d.uSiswa.size, d.total]);
+            } else if (tab === 'siswa') {
+                reportTitle = "REKAP POIN KEDISIPLINAN - SISWA";
+                cols = ["No", "NIS", "Nama Siswa", "Kelas", "Jml Pelanggaran", "Total Akumulasi Poin"];
+                dataset = dataArr.map((d, i) => [i+1, d.nis, d.nama, d.kelas, d.count, d.total]);
+            } else if (tab === 'kelas') {
+                reportTitle = "REKAP POIN KEDISIPLINAN - KELAS";
+                cols = ["No", "Kelas", "Siswa Terlibat", "Jml Pelanggaran", "Total Poin"];
+                dataset = dataArr.map((d, i) => [i+1, d.kelas, d.uSiswa.size, d.count, d.total]);
+            }
+
+            let start = document.getElementById('rp-start').value;
+            let end = document.getElementById('rp-end').value;
+            let pStr = start && end ? `${fDateIndo(start)} s/d ${fDateIndo(end)}` : (start || end || 'Semua Waktu');
+            let filename = `Rekap-Poin-${tab}-${getToday()}`;
+
+            if (type === 'excel') {
+                const wsData = [cols, ...dataset];
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Rekap");
+                XLSX.writeFile(wb, `${filename}.xlsx`);
+            } else if (type === 'pdf') {
+                const { jsPDF } = window.jspdf; const doc = new jsPDF();
+                doc.setFontSize(14); doc.setFont("helvetica", "bold");
+                doc.text("SMP IT MENTARI ILMU", 14, 20);
+                doc.text(reportTitle, 14, 26);
+                
+                doc.setFontSize(10); doc.setFont("helvetica", "normal");
+                doc.text(`Periode Filter: ${pStr}`, 14, 34);
+                
+                doc.autoTable({ head: [cols], body: dataset, startY: 40, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [18, 79, 71] } }); 
+                doc.save(`${filename}.pdf`);
+            }
+        }
+
+        // Modal: Detail Rekap Harian (NEW)
+        function openModalDetailRpHarian(tgl) {
+            let filteredPoin = appState.rp.filteredData; // using global filtered data
+            let dayData = filteredPoin.filter(p => p.tanggal === tgl);
+            
+            if(dayData.length === 0) return;
+
+            let uSiswa = new Set();
+            let total = 0;
+            dayData.forEach(p => { uSiswa.add(p.nis); total += p.poin; });
+
+            document.getElementById('detRpHarianTgl').innerText = fDateIndo(tgl);
+            document.getElementById('detRpHarianSiswa').innerText = uSiswa.size;
+            document.getElementById('detRpHarianCount').innerText = dayData.length;
+            document.getElementById('detRpHarianTotal').innerText = total;
+
+            const tbody = document.getElementById('tbody-det-rp-harian');
+            tbody.innerHTML = dayData.map((p, i) => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-2 text-xs text-gray-500">${i+1}</td>
+                    <td class="px-4 py-2 text-xs font-mono">${p.nis}</td>
+                    <td class="px-4 py-2 text-xs font-bold text-mi-deep">${p.nama}</td>
+                    <td class="px-4 py-2 text-xs text-gray-600">${p.kelas}</td>
+                    <td class="px-4 py-2 text-xs text-gray-800">${p.pelanggaran}</td>
+                    <td class="px-4 py-2 text-center text-xs font-bold text-rose-600 bg-rose-50 border-b border-rose-100">${p.poin}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('modalDetailRpHarian').classList.remove('hidden');
+        }
+
+        // Modal: Detail Poin Siswa (Berdasarkan Filter Aktif)
+        function openModalDetailPoinSiswa(nis) {
+            let filteredPoin = appState.rp.filteredData; // Use globally filtered data
+            let studentHistory = filteredPoin.filter(p => p.nis === nis).sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+            
+            if(studentHistory.length === 0) return; // Seharusnya tidak mungkin jika di-klik dari tabel terfilter
+            
+            let student = db.students.find(s => s.nis === nis) || { nama: studentHistory[0].nama, kelas: studentHistory[0].kelas };
+
+            document.getElementById('detPoinSiswaName').innerText = student.nama;
+            document.getElementById('detPoinSiswaNis').innerText = nis;
+            document.getElementById('detPoinSiswaKelas').innerText = student.kelas;
+
+            // Info Filter Text
+            let start = document.getElementById('rp-start').value;
+            let end = document.getElementById('rp-end').value;
+            let filterTxt = start && end ? `${fDateIndo(start)} - ${fDateIndo(end)}` : (start || end || 'Semua Waktu');
+            document.getElementById('detPoinSiswaFilter').innerText = filterTxt;
+
+            // Stats inside modal
+            let totalPelanggaran = studentHistory.length;
+            let totalPoin = studentHistory.reduce((sum, p) => sum + p.poin, 0);
+            
+            document.getElementById('detPoinSiswaCount').innerText = totalPelanggaran;
+            document.getElementById('detPoinSiswaTotal').innerText = totalPoin;
+
+            const tbody = document.getElementById('tbody-det-poin-siswa');
+            tbody.innerHTML = studentHistory.map((p, i) => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-4 py-2 text-xs text-gray-500">${i+1}</td>
+                    <td class="px-4 py-2 text-xs font-semibold">${fDateIndo(p.tanggal)}</td>
+                    <td class="px-4 py-2 text-xs font-bold text-gray-800">${p.pelanggaran}</td>
+                    <td class="px-4 py-2 text-center text-xs font-bold text-rose-600 bg-rose-50 border-b border-rose-100">${p.poin}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('modalDetailPoinSiswa').classList.remove('hidden');
+        }
+
+        // Modal: Detail Poin Kelas (Berdasarkan Filter Aktif)
+        function openModalDetailPoinKelas(kelas) {
+            let filteredPoin = appState.rp.filteredData; // Use globally filtered data
+            let classHistory = filteredPoin.filter(p => p.kelas === kelas);
+            
+            if(classHistory.length === 0) return;
+
+            document.getElementById('detPoinKelasTitle').innerText = kelas;
+
+            // Aggregate by Student in that class
+            let sAgg = {};
+            classHistory.forEach(p => {
+                if(!sAgg[p.nis]) { sAgg[p.nis] = { nis: p.nis, nama: p.nama, count: 0, totalPoin: 0 }; }
+                sAgg[p.nis].count++;
+                sAgg[p.nis].totalPoin += p.poin;
+            });
+
+            let sArr = Object.values(sAgg).sort((a,b) => b.count - a.count);
+
+            document.getElementById('detPoinKelasSiswa').innerText = sArr.length;
+            document.getElementById('detPoinKelasCount').innerText = classHistory.length;
+            document.getElementById('detPoinKelasTotal').innerText = classHistory.reduce((sum, p) => sum + p.poin, 0);
+
+            const tbody = document.getElementById('tbody-det-poin-kelas');
+            tbody.innerHTML = sArr.map((s, i) => `
+                <tr class="hover:bg-gray-50 cursor-pointer transition-colors" onclick="closeModal('modalDetailPoinKelas'); openModalDetailPoinSiswa('${s.nis}')">
+                    <td class="px-4 py-2 text-xs text-gray-500">${i+1}</td>
+                    <td class="px-4 py-2 text-xs font-mono">${s.nis}</td>
+                    <td class="px-4 py-2 text-xs font-bold text-mi-deep hover:underline">${s.nama}</td>
+                    <td class="px-4 py-2 text-center text-xs font-bold text-amber-700">${s.count} Kali</td>
+                    <td class="px-4 py-2 text-center text-xs font-bold text-rose-600 bg-rose-50 border-b border-rose-100">${s.totalPoin}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('modalDetailPoinKelas').classList.remove('hidden');
         }
 
         // ==========================================

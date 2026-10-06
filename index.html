@@ -943,114 +943,10 @@
                                         <input type="text" id="ip-jenis" value="Tidak Fingerprint" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep bg-gray-100 font-bold" readonly>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-600 mb-1">Nilai Poin</label>
-                                        <input type="number" id="ip-poin" value="-5" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep bg-gray-100 font-bold text-rose-600" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-white px-4 py-3 border-b border-gray-200 flex justify-between items-center shrink-0">
-                                <span class="text-xs font-bold text-gray-600" id="ip-count-siswa">Menunggu pemilihan tanggal...</span>
-                                <button onclick="simpanInputPoinMassal()" id="btn-simpan-poin" disabled class="px-4 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
-                                    <i class="fa-solid fa-save mr-1"></i> Simpan Poin Terpilih
-                                </button>
-                            </div>
-
-                            <div class="overflow-auto flex-grow relative">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50 sticky top-0 z-10">
-                                        <tr>
-                                            <th class="px-4 py-3 text-left w-12">
-                                                <input type="checkbox" id="ip-check-all" onchange="toggleCheckAllPoin(this)" class="w-4 h-4 text-mi-deep rounded border-gray-300 focus:ring-mi-deep cursor-pointer">
-                                            </th>
-                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
-                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">NIS</th>
-                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Siswa</th>
-                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th>
-                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-24 whitespace-nowrap">Poin</th>
-                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-32 whitespace-nowrap">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody-input-poin" class="bg-white divide-y divide-gray-200">
-                                        <tr><td colspan="7" class="px-4 py-8 text-sm text-center text-gray-500">Pilih tanggal terlebih dahulu untuk memuat data siswa.</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- MENU: REKAP POIN -->
-                    <div id="admin-menu-rekap-poin" class="admin-content-section hidden flex flex-col h-full">
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full overflow-hidden">
-                            <!-- Filter Section -->
-                            <div class="p-4 border-b border-gray-200 bg-gray-50 flex flex-col gap-3 shrink-0">
-                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-1">
-                                    <h3 class="text-sm font-bold text-gray-800 flex items-center"><i class="fa-solid fa-filter text-mi-emerald mr-2"></i>Filter Rekap Poin</h3>
-                                    <div class="flex gap-2 w-full sm:w-auto">
-                                        <button onclick="refreshFilterRekapPoin()" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 rounded-lg text-xs font-bold hover:bg-gray-100 shadow-sm flex items-center justify-center flex-1 sm:flex-none"><i class="fa-solid fa-rotate mr-1.5"></i> Refresh</button>
-                                        <button onclick="resetFilterRekapPoin()" class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg text-xs font-bold hover:bg-gray-300 shadow-sm flex items-center justify-center flex-1 sm:flex-none"><i class="fa-solid fa-rotate-left mr-1.5"></i> Reset</button>
-                                        <button onclick="applyFilterRekapPoin()" class="px-4 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald shadow-sm flex items-center justify-center flex-1 sm:flex-none"><i class="fa-solid fa-check mr-1.5"></i> Terapkan Filter</button>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Mulai Tgl</label>
-                                        <input type="date" id="rp-start" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Sampai Tgl</label>
-                                        <input type="date" id="rp-end" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Kelas</label>
-                                        <select id="rp-kelas" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
-                                            <option value="all">Semua Kelas</option>
-                                        </select>
-                                    </div>
-                                    <div class="md:col-span-2">
-                                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Cari Siswa / Pelanggaran</label>
-                                        <input type="text" id="rp-search" placeholder="Nama, NIS, Pelanggaran..." class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Summary Cards Section -->
-                            <div class="px-4 pt-4 pb-3 bg-white shrink-0">
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center bg-rose-50 text-rose-600 shrink-0">
-                                            <i class="fa-solid fa-calculator text-lg md:text-xl"></i>
-                                        </div>
-                                        <div>
-                                            <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Total Poin</div>
-                                            <div class="text-xl md:text-2xl font-extrabold text-gray-800 leading-none" id="rp-sum-poin">0</div>
-                                        </div>
-                                    </div>
-                                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center bg-amber-50 text-amber-600 shrink-0">
-                                            <i class="fa-solid fa-triangle-exclamation text-lg md:text-xl"></i>
-                                        </div>
-                                        <div>
-                                            <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Total Pelanggaran</div>
-                                            <div class="text-xl md:text-2xl font-extrabold text-gray-800 leading-none" id="rp-sum-pelanggaran">0</div>
-                                        </div>
-                                    </div>
-                                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center bg-blue-50 text-blue-600 shrink-0">
-                                            <i class="fa-solid fa-users text-lg md:text-xl"></i>
-                                        </div>
-                                        <div>
-                                            <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Siswa Terlibat</div>
-                                            <div class="text-xl md:text-2xl font-extrabold text-gray-800 leading-none" id="rp-sum-siswa">0</div>
-                                        </div>
-                                    </div>
-                                    <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center bg-emerald-50 text-mi-emerald shrink-0">
-                                            <i class="fa-solid fa-school text-lg md:text-xl"></i>
-                                        </div>
-                                        <div>
-                                            <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Kelas Terlibat</div>
-                                            <div class="text-xl md:text-2xl font-extrabold text-gray-800 leading-none" id="rp-sum-kelas">0</div>
+                                        <label class="block text-xs font-bold text-gray-600 mb-1">Setel Poin Massal</label>
+                                        <div class="flex gap-2">
+                                            <input type="number" id="ip-poin" value="-5" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-mi-deep bg-white font-bold text-rose-600">
+                                            <button onclick="terapkanPoinMassal()" class="px-3 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors whitespace-nowrap shadow-sm">Terapkan</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1073,9 +969,10 @@
                                     </button>
                                 </div>
                                 <div class="flex items-center gap-2 pb-2 lg:pb-1.5 w-full lg:w-auto justify-between lg:justify-end">
-                                    <div class="flex items-center gap-2 border-r border-gray-300 pr-3 mr-1">
-                                        <span class="text-[10px] font-bold text-gray-500">Tampilkan:</span>
-                                        <select id="rp-limit" onchange="changeRpLimit(this.value)" class="border border-gray-300 rounded text-xs py-1 px-2 focus:outline-none focus:border-mi-deep bg-white">
+                                    <div class="flex items-center gap-2 border border-gray-300 bg-white rounded-lg px-2 py-1 shadow-sm mr-1">
+                                        <i class="fa-solid fa-list-ol text-gray-400 text-[10px]"></i>
+                                        <span class="text-[10px] font-bold text-gray-600">Tampilkan:</span>
+                                        <select id="rp-limit" onchange="changeRpLimit(this.value)" class="text-xs py-0.5 px-1 focus:outline-none focus:text-mi-deep bg-transparent font-bold text-gray-800 border-none cursor-pointer">
                                             <option value="10">10</option>
                                             <option value="25" selected>25</option>
                                             <option value="50">50</option>
@@ -1083,8 +980,8 @@
                                         </select>
                                     </div>
                                     <div class="flex gap-2">
-                                        <button onclick="exportRekapPoin('excel')" class="px-3 py-1.5 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded border border-blue-200 text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                                        <button onclick="exportRekapPoin('pdf')" class="px-3 py-1.5 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded border border-rose-200 text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                                        <button onclick="exportRekapPoin('excel')" class="px-3 py-1.5 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded-lg border border-blue-200 text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                                        <button onclick="exportRekapPoin('pdf')" class="px-3 py-1.5 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded-lg border border-rose-200 text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                                     </div>
                                 </div>
                             </div>
@@ -1108,6 +1005,142 @@
                                     <button onclick="changeRpPage(-1)" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 transition-colors border-r border-gray-300"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
                                     <span id="rp-page-number" class="px-4 py-1.5 bg-gray-50 text-xs font-bold text-mi-deep flex items-center justify-center min-w-[40px]">1</span>
                                     <button onclick="changeRpPage(1)" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 transition-colors border-l border-gray-300"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MENU: LAPORAN REKAP -->
+                    <div id="admin-menu-laporan-rekap" class="admin-content-section hidden flex flex-col h-full">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full overflow-hidden">
+                            <div class="p-4 border-b border-gray-200 bg-gray-50 flex flex-col gap-3 shrink-0">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-1">
+                                    <h3 class="text-sm font-bold text-gray-800 flex items-center"><i class="fa-solid fa-filter text-mi-emerald mr-2"></i>Filter Laporan</h3>
+                                    <button onclick="generateAdminReport()" class="px-4 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald shadow-sm flex items-center justify-center w-full sm:w-auto transition-colors"><i class="fa-solid fa-bolt mr-1.5"></i> Generate Laporan</button>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Mulai Tgl</label><input type="date" id="admRepStartDate" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep"></div>
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Sampai Tgl</label><input type="date" id="admRepEndDate" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep"></div>
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Kelas</label><select id="admRepKelas" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep"><option value="all">Semua Kelas</option></select></div>
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Kelompok Tahsin</label><select id="admRepTahsin" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep"><option value="all">Semua Kelompok</option></select></div>
+                                </div>
+                            </div>
+
+                            <!-- Summary Cards -->
+                            <div class="px-4 pt-4 pb-3 bg-white shrink-0">
+                                <div class="grid grid-cols-2 md:grid-cols-6 gap-2">
+                                    <div class="bg-gray-50 p-2 rounded border border-gray-100 text-center"><div class="text-[9px] font-bold text-gray-500 uppercase">Siswa Dipantau</div><div class="text-sm font-bold text-gray-800" id="repSumSiswa">0</div></div>
+                                    <div class="bg-gray-50 p-2 rounded border border-gray-100 text-center"><div class="text-[9px] font-bold text-gray-500 uppercase">Hari Aktif</div><div class="text-sm font-bold text-gray-800" id="repSumHari">0</div></div>
+                                    <div class="bg-gray-50 p-2 rounded border border-gray-100 text-center"><div class="text-[9px] font-bold text-gray-500 uppercase">Harus Finger</div><div class="text-sm font-bold text-mi-deep" id="repSumHarus">0</div></div>
+                                    <div class="bg-green-50 p-2 rounded border border-green-100 text-center"><div class="text-[9px] font-bold text-green-600 uppercase">Sudah Finger</div><div class="text-sm font-bold text-green-700" id="repSumSudah">0</div></div>
+                                    <div class="bg-rose-50 p-2 rounded border border-rose-100 text-center"><div class="text-[9px] font-bold text-rose-600 uppercase">Belum Finger</div><div class="text-sm font-bold text-rose-700" id="repSumBelum">0</div></div>
+                                    <div class="bg-blue-50 p-2 rounded border border-blue-100 text-center"><div class="text-[9px] font-bold text-blue-600 uppercase">Persentase</div><div class="text-sm font-bold text-blue-700" id="repSumPersen">0%</div></div>
+                                </div>
+                            </div>
+
+                            <!-- Tabs & Actions -->
+                            <div class="px-4 border-b border-gray-200 bg-gray-50 shrink-0 flex flex-col sm:flex-row justify-between items-end gap-3 pt-2">
+                                <div class="flex space-x-1 overflow-x-auto hide-scrollbar">
+                                    <button onclick="switchRepTab('siswa')" id="btn-rep-siswa" class="px-4 py-2 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-mi-deep bg-mi-mint text-mi-deep rounded-t-lg flex items-center gap-2 shadow-[0_-2px_4px_rgba(0,0,0,0.02)]">
+                                        <i class="fa-solid fa-user"></i> Rekap Siswa
+                                    </button>
+                                    <button onclick="switchRepTab('kelas')" id="btn-rep-kelas" class="px-4 py-2 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-t-lg flex items-center gap-2">
+                                        <i class="fa-solid fa-school"></i> Rekap Kelas
+                                    </button>
+                                    <button onclick="switchRepTab('tahsin')" id="btn-rep-tahsin" class="px-4 py-2 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-t-lg flex items-center gap-2">
+                                        <i class="fa-solid fa-book-quran"></i> Rekap Tahsin
+                                    </button>
+                                </div>
+                                <div class="flex gap-2 pb-1.5">
+                                    <button onclick="exportAdminReport('excel')" class="px-3 py-1.5 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded border border-blue-200 text-[10px] font-bold shadow-sm transition-colors flex items-center"><i class="fa-solid fa-file-excel mr-1.5"></i> Excel</button>
+                                    <button onclick="exportAdminReport('pdf')" class="px-3 py-1.5 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded border border-rose-200 text-[10px] font-bold shadow-sm transition-colors flex items-center"><i class="fa-solid fa-file-pdf mr-1.5"></i> PDF</button>
+                                </div>
+                            </div>
+
+                            <!-- Table Content -->
+                            <div class="overflow-auto flex-grow relative bg-white">
+                                <table class="min-w-full divide-y divide-gray-200" id="table-rep-siswa">
+                                    <thead class="bg-gray-50 sticky top-0 shadow-sm">
+                                        <tr><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">No</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">NIS</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Siswa</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Tahsin</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Target</th><th class="px-4 py-3 text-center text-[10px] font-bold text-green-600 uppercase">Sudah</th><th class="px-4 py-3 text-center text-[10px] font-bold text-rose-600 uppercase">Belum</th><th class="px-4 py-3 text-center text-[10px] font-bold text-blue-600 uppercase">%</th></tr>
+                                    </thead>
+                                    <tbody id="tbody-rep-siswa" class="divide-y divide-gray-100">
+                                        <tr><td colspan="9" class="px-4 py-8 text-xs text-center text-gray-500">Silakan klik Generate Laporan terlebih dahulu.</td></tr>
+                                    </tbody>
+                                </table>
+                                
+                                <table class="min-w-full divide-y divide-gray-200 hidden" id="table-rep-kelas">
+                                    <thead class="bg-gray-50 sticky top-0 shadow-sm">
+                                        <tr><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">No</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Total Siswa</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Target</th><th class="px-4 py-3 text-center text-[10px] font-bold text-green-600 uppercase">Sudah</th><th class="px-4 py-3 text-center text-[10px] font-bold text-rose-600 uppercase">Belum</th><th class="px-4 py-3 text-center text-[10px] font-bold text-blue-600 uppercase">%</th></tr>
+                                    </thead>
+                                    <tbody id="tbody-rep-kelas" class="divide-y divide-gray-100"></tbody>
+                                </table>
+                                
+                                <table class="min-w-full divide-y divide-gray-200 hidden" id="table-rep-tahsin">
+                                    <thead class="bg-gray-50 sticky top-0 shadow-sm">
+                                        <tr><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">No</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Kelompok Tahsin</th><th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Mudir</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Anggota</th><th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase">Target</th><th class="px-4 py-3 text-center text-[10px] font-bold text-green-600 uppercase">Sudah</th><th class="px-4 py-3 text-center text-[10px] font-bold text-rose-600 uppercase">Belum</th><th class="px-4 py-3 text-center text-[10px] font-bold text-blue-600 uppercase">%</th></tr>
+                                    </thead>
+                                    <tbody id="tbody-rep-tahsin" class="divide-y divide-gray-100"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MENU: MANAGE AKUN -->
+                    <div id="admin-menu-akun" class="admin-content-section hidden flex flex-col h-full">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
+                            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                                <h3 class="text-sm font-bold text-gray-800"><i class="fa-solid fa-users-gear text-mi-emerald mr-2"></i> Manajemen Akun Admin/GTK</h3>
+                                <button onclick="openModalAkun('add')" class="px-3 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors shadow-sm"><i class="fa-solid fa-plus mr-1"></i> Tambah Akun</button>
+                            </div>
+                            <div class="overflow-auto flex-grow relative">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50 sticky top-0 z-10">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Username</th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Lengkap</th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Role</th>
+                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-32">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-adm-akun" class="bg-white divide-y divide-gray-200"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MENU: PENGATURAN -->
+                    <div id="admin-menu-pengaturan" class="admin-content-section hidden">
+                        <div class="max-w-2xl mx-auto space-y-6">
+                            <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                                <h3 class="text-base font-bold text-gray-800 mb-5"><i class="fa-solid fa-gear text-mi-deep mr-2"></i> Pengaturan Sistem</h3>
+                                
+                                <div class="border border-blue-200 bg-blue-50 rounded-xl p-4 flex items-start gap-4 hover:shadow-md transition-shadow mb-4">
+                                    <div class="text-blue-600 text-3xl mt-1 shrink-0"><i class="fa-solid fa-download"></i></div>
+                                    <div>
+                                        <h4 class="font-bold text-blue-800 text-sm mb-1">Backup Data Sistem</h4>
+                                        <p class="text-xs text-blue-700 mb-3 leading-relaxed">Unduh seluruh data (Siswa, Kelas, Tahsin, Fingerprint, Poin) ke dalam format .json sebagai cadangan aman.</p>
+                                        <button onclick="backupData()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors shadow-sm"><i class="fa-solid fa-cloud-arrow-down mr-1"></i> Download Backup</button>
+                                    </div>
+                                </div>
+
+                                <div class="border border-green-200 bg-green-50 rounded-xl p-4 flex items-start gap-4 hover:shadow-md transition-shadow mb-4">
+                                    <div class="text-green-600 text-3xl mt-1 shrink-0"><i class="fa-solid fa-upload"></i></div>
+                                    <div>
+                                        <h4 class="font-bold text-green-800 text-sm mb-1">Restore Data (Pulihkan)</h4>
+                                        <p class="text-xs text-green-700 mb-3 leading-relaxed">Pulihkan sistem dari file backup (.json). <b>Peringatan:</b> Data saat ini akan terhapus dan ditimpa secara permanen.</p>
+                                        <input type="file" id="fileRestore" accept=".json" class="hidden" onchange="restoreData(event)">
+                                        <button onclick="document.getElementById('fileRestore').click()" class="px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-bold hover:bg-green-700 transition-colors shadow-sm"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> Pilih File Backup (.json)</button>
+                                    </div>
+                                </div>
+
+                                <div class="border border-rose-200 bg-rose-50 rounded-xl p-4 flex items-start gap-4 hover:shadow-md transition-shadow">
+                                    <div class="text-rose-600 text-3xl mt-1 shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                                    <div>
+                                        <h4 class="font-bold text-rose-800 text-sm mb-1">Reset Database (Dummy)</h4>
+                                        <p class="text-xs text-rose-700 mb-3 leading-relaxed">Tindakan ini akan menghapus seluruh data siswa, absensi, kelompok tahsin, serta poin kedisiplinan dan mengembalikannya ke data bawaan simulasi (dummy data). Proses ini tidak dapat dibatalkan.</p>
+                                        <button onclick="resetDummyData()" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold hover:bg-rose-700 transition-colors shadow-sm"><i class="fa-solid fa-rotate-left mr-1"></i> Reset Sistem Sekarang</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1168,11 +1201,15 @@
             <div class="p-4 bg-gray-50 shrink-0 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-gray-600" id="mdl-daftar-subtitle">Data Tanggal: -</span>
-                    <span class="px-2 py-1 bg-rose-100 text-rose-700 text-xs font-bold rounded-lg" id="mdl-daftar-count">Total: 0</span>
+                    <div class="flex items-center gap-2">
+                        <button onclick="exportTableTo('table-mdl-daftar', 'Daftar Siswa Belum FP', 'excel')" class="px-2 py-1 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded text-[10px] font-bold transition-colors shadow-sm"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                        <button onclick="exportTableTo('table-mdl-daftar', 'Daftar Siswa Belum FP', 'pdf')" class="px-2 py-1 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded text-[10px] font-bold transition-colors shadow-sm"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                        <span class="px-2 py-1 bg-rose-100 text-rose-700 text-xs font-bold rounded-lg ml-1" id="mdl-daftar-count">Total: 0</span>
+                    </div>
                 </div>
             </div>
             <div class="overflow-y-auto flex-grow bg-white">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table id="table-mdl-daftar" class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
                         <tr>
                             <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase">No</th>
@@ -1204,9 +1241,15 @@
                 <div class="bg-white p-2 rounded shadow-sm border border-gray-100"><div class="text-[9px] font-bold text-rose-600 uppercase">Belum Finger</div><div class="text-sm font-bold text-rose-700" id="detClassBelum">-</div></div>
                 <div class="bg-white p-2 rounded shadow-sm border border-gray-100"><div class="text-[9px] font-bold text-blue-600 uppercase">Persentase</div><div class="text-sm font-bold text-blue-700" id="detClassPersen">-</div></div>
             </div>
-            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700">Daftar Siswa Belum Fingerprint</div>
+            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 flex justify-between items-center shrink-0">
+                <span>Daftar Siswa Belum Fingerprint</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportTableTo('table-mdl-class-students', 'Detail Siswa Belum FP Kelas', 'excel')" class="px-2 py-1 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                    <button onclick="exportTableTo('table-mdl-class-students', 'Detail Siswa Belum FP Kelas', 'pdf')" class="px-2 py-1 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                </div>
+            </div>
             <div class="overflow-y-auto flex-grow bg-white">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table id="table-mdl-class-students" class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
                         <tr>
                             <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
@@ -1241,9 +1284,15 @@
                 <div class="bg-gray-50 p-2 rounded shadow-sm border border-gray-100"><div class="text-[9px] font-bold text-rose-600 uppercase">Belum Finger</div><div class="text-sm font-bold text-rose-700" id="detTahsinBelum">-</div></div>
                 <div class="bg-gray-50 p-2 rounded shadow-sm border border-gray-100"><div class="text-[9px] font-bold text-blue-600 uppercase">Persentase</div><div class="text-sm font-bold text-blue-700" id="detTahsinPersen">-</div></div>
             </div>
-            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700">Daftar Anggota Kelompok (Rekap Fingerprint)</div>
+            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 flex justify-between items-center shrink-0">
+                <span>Daftar Anggota Kelompok (Rekap Fingerprint)</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportTableTo('table-mdl-tahsin-students', 'Detail Rekap FP Tahsin', 'excel')" class="px-2 py-1 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                    <button onclick="exportTableTo('table-mdl-tahsin-students', 'Detail Rekap FP Tahsin', 'pdf')" class="px-2 py-1 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                </div>
+            </div>
             <div class="overflow-y-auto flex-grow bg-white">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table id="table-mdl-tahsin-students" class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
                         <tr>
                             <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
@@ -1307,12 +1356,16 @@
                     </div>
                 </div>
                 
-                <h4 class="text-xs font-bold text-gray-700 uppercase mb-2 flex justify-between">
-                    <span>Riwayat Belum Fingerprint</span>
-                    <span class="text-gray-500 font-normal normal-case text-[10px]" id="detLast">Terakhir: -</span>
-                </h4>
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="text-xs font-bold text-gray-700 uppercase">Riwayat Belum Fingerprint</h4>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 font-normal normal-case text-[10px] mr-2" id="detLast">Terakhir: -</span>
+                        <button onclick="exportTableTo('table-det-history', 'Riwayat Siswa Belum FP', 'excel')" class="px-2 py-1 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded text-[10px] font-bold transition-colors shadow-sm"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                        <button onclick="exportTableTo('table-det-history', 'Riwayat Siswa Belum FP', 'pdf')" class="px-2 py-1 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded text-[10px] font-bold transition-colors shadow-sm"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    </div>
+                </div>
                 <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                    <table class="min-w-full divide-y divide-gray-200 text-xs">
+                    <table id="table-det-history" class="min-w-full divide-y divide-gray-200 text-xs">
                         <thead class="bg-gray-50"><th class="px-4 py-2 text-left font-semibold text-gray-500 w-12">No</th><th class="px-4 py-2 text-left font-semibold text-gray-500">Tanggal</th><th class="px-4 py-2 text-left font-semibold text-gray-500">Status</th></thead>
                         <tbody id="detHistoryTable" class="divide-y divide-gray-100"></tbody>
                     </table>
@@ -1673,9 +1726,15 @@
                 </div>
             </div>
 
-            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 shrink-0">Riwayat Pelanggaran (Berdasarkan Filter)</div>
+            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 flex justify-between items-center shrink-0">
+                <span>Riwayat Pelanggaran (Berdasarkan Filter)</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportTableTo('table-det-poin-siswa', 'Detail Poin Siswa', 'excel')" class="px-2 py-1 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                    <button onclick="exportTableTo('table-det-poin-siswa', 'Detail Poin Siswa', 'pdf')" class="px-2 py-1 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                </div>
+            </div>
             <div class="overflow-auto flex-grow bg-white">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table id="table-det-poin-siswa" class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
                         <tr>
                             <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
@@ -1720,9 +1779,15 @@
                 </div>
             </div>
 
-            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 shrink-0">Daftar Pemberian Poin</div>
+            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 flex justify-between items-center shrink-0">
+                <span>Daftar Pemberian Poin</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportTableTo('table-det-rp-harian', 'Detail Rekap Harian', 'excel')" class="px-2 py-1 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                    <button onclick="exportTableTo('table-det-rp-harian', 'Detail Rekap Harian', 'pdf')" class="px-2 py-1 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                </div>
+            </div>
             <div class="overflow-auto flex-grow bg-white">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table id="table-det-rp-harian" class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
                         <tr>
                             <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
@@ -1763,9 +1828,15 @@
                 </div>
             </div>
 
-            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 shrink-0">Daftar Siswa (Berdasarkan Filter)</div>
+            <div class="px-4 py-2 bg-white border-b border-gray-100 font-bold text-xs text-gray-700 flex justify-between items-center shrink-0">
+                <span>Daftar Siswa (Berdasarkan Filter)</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportTableTo('table-det-poin-kelas', 'Detail Poin Kelas', 'excel')" class="px-2 py-1 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                    <button onclick="exportTableTo('table-det-poin-kelas', 'Detail Poin Kelas', 'pdf')" class="px-2 py-1 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded text-[10px] font-bold transition-colors"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                </div>
+            </div>
             <div class="overflow-auto flex-grow bg-white">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table id="table-det-poin-kelas" class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 sticky top-0">
                         <tr>
                             <th class="px-4 py-2 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
@@ -2010,6 +2081,118 @@
                     Swal.fire('Berhasil', 'Data dikembalikan ke bawaan.', 'success');
                 }
             });
+        }
+
+        // ==========================================
+        // FITUR BACKUP & RESTORE DATA (PENGATURAN)
+        // ==========================================
+        function backupData() {
+            let backupObj = {
+                students: db.students, bfp: db.bfp, poin: db.poin, 
+                kelompokTahsin: db.kelompokTahsin, classes: db.classes, users: db.users
+            };
+            
+            let dataStr = JSON.stringify(backupObj, null, 2);
+            let blob = new Blob([dataStr], { type: "application/json" });
+            let url = URL.createObjectURL(blob);
+            
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = `Backup_Data_Mentari_Ilmu_${getToday()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            Swal.fire({toast:true, position:'top-end', icon:'success', title:'File Backup Berhasil Diunduh', showConfirmButton:false, timer:2000});
+        }
+
+        function restoreData(event) {
+            let file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    let jsonData = JSON.parse(e.target.result);
+                    
+                    if(jsonData.students && jsonData.bfp) {
+                        Swal.fire({
+                            title: 'Konfirmasi Restore',
+                            text: 'Apakah Anda yakin ingin memulihkan dari file backup ini? Data saat ini akan digantikan seluruhnya.',
+                            icon: 'warning', showCancelButton: true, confirmButtonColor: '#128C7E'
+                        }).then((result) => {
+                            if(result.isConfirmed) {
+                                db.students = jsonData.students;
+                                db.bfp = jsonData.bfp;
+                                db.poin = jsonData.poin || [];
+                                db.kelompokTahsin = jsonData.kelompokTahsin || [];
+                                db.classes = jsonData.classes || [];
+                                db.users = jsonData.users || [];
+                                
+                                saveData();
+                                initData();
+                                switchAdminMenu('dashboard');
+                                Swal.fire('Berhasil!', 'Data sistem berhasil dipulihkan.', 'success');
+                            }
+                            document.getElementById('fileRestore').value = '';
+                        });
+                    } else {
+                        Swal.fire('Gagal', 'Format file backup tidak valid.', 'error');
+                        document.getElementById('fileRestore').value = '';
+                    }
+                } catch (err) {
+                    Swal.fire('Error', 'File korup atau bukan JSON yang valid.', 'error');
+                    document.getElementById('fileRestore').value = '';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ==========================================
+        // EXPORT GENERIC UNTUK SEMUA MODAL DETAIL
+        // ==========================================
+        function exportTableTo(tableId, reportTitle, type) {
+            let table = document.getElementById(tableId);
+            if(!table) return Swal.fire('Error', 'Tabel tidak ditemukan', 'error');
+
+            let cols = [];
+            let dataset = [];
+
+            // Parse Headers (Lewati kolom dengan class khusus aksi/checkbox jika diperlukan)
+            let ths = table.querySelectorAll('thead th');
+            ths.forEach(th => cols.push(th.innerText.trim()));
+
+            // Parse Body
+            let trs = table.querySelectorAll('tbody tr');
+            trs.forEach(tr => {
+                let row = [];
+                let tds = tr.querySelectorAll('td');
+                // skip if it's an empty message
+                if(tds.length === 1 && tds[0].colSpan > 1) return; 
+                
+                tds.forEach(td => row.push(td.innerText.trim()));
+                if(row.length > 0) dataset.push(row);
+            });
+
+            if(dataset.length === 0) return Swal.fire('Info', 'Tidak ada data pada tabel', 'info');
+
+            let filename = `${reportTitle.replace(/\s+/g, '-')}-${getToday()}`;
+
+            if(type === 'excel') {
+                const wsData = [cols, ...dataset];
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Detail Data");
+                XLSX.writeFile(wb, `${filename}.xlsx`);
+            } else if (type === 'pdf') {
+                const { jsPDF } = window.jspdf; 
+                const doc = new jsPDF();
+                doc.setFontSize(14); doc.setFont("helvetica", "bold");
+                doc.text("SMP IT MENTARI ILMU", 14, 20);
+                doc.text(reportTitle.toUpperCase(), 14, 26);
+                
+                doc.autoTable({ head: [cols], body: dataset, startY: 35, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [18, 79, 71] } }); 
+                doc.save(`${filename}.pdf`);
+            }
         }
 
         function populateDropdowns() {
@@ -3025,8 +3208,15 @@
                 el.className = 'admin-nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-white/70 hover:bg-white/10 hover:text-white';
             });
             
-            document.getElementById(`admin-menu-${menuId}`).classList.remove('hidden');
-            document.getElementById(`nav-${menuId}`).className = 'admin-nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-white/20 text-white';
+            let menuSection = document.getElementById(`admin-menu-${menuId}`);
+            if (menuSection) {
+                menuSection.classList.remove('hidden');
+            }
+            
+            let navBtn = document.getElementById(`nav-${menuId}`);
+            if (navBtn) {
+                navBtn.className = 'admin-nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-white/20 text-white';
+            }
             
             const titles = {
                 'dashboard': 'Dashboard', 'siswa': 'Master Data Siswa', 'kelas': 'Master Kelas', 'tahsin': 'Kelompok Tahsin',
@@ -3962,10 +4152,18 @@
 
         // --- Laporan Rekap (Admin) ---
         function generateAdminReport() {
-            const start = document.getElementById('admRepStartDate').value;
-            const end = document.getElementById('admRepEndDate').value;
-            const kelas = document.getElementById('admRepKelas').value;
-            const tahsin = document.getElementById('admRepTahsin').value;
+            const startEl = document.getElementById('admRepStartDate');
+            const endEl = document.getElementById('admRepEndDate');
+            const kelasEl = document.getElementById('admRepKelas');
+            const tahsinEl = document.getElementById('admRepTahsin');
+
+            // Mencegah error jika elemen HTML belum ada di halaman
+            if (!startEl || !endEl || !kelasEl || !tahsinEl) return;
+
+            const start = startEl.value;
+            const end = endEl.value;
+            const kelas = kelasEl.value;
+            const tahsin = tahsinEl.value;
 
             if(!start || !end) return Swal.fire('Error', 'Pilih tanggal mulai dan selesai', 'error');
 
@@ -3985,13 +4183,21 @@
 
         function switchRepTab(tab) {
             appState.activeRepTab = tab;
-            document.getElementById('btn-rep-siswa').className = tab === 'siswa' ? 'px-4 py-1 rounded text-xs font-bold bg-mi-deep text-white' : 'px-4 py-1 rounded text-xs font-bold bg-white border border-gray-300 text-gray-600 hover:bg-gray-100';
-            document.getElementById('btn-rep-kelas').className = tab === 'kelas' ? 'px-4 py-1 rounded text-xs font-bold bg-mi-deep text-white' : 'px-4 py-1 rounded text-xs font-bold bg-white border border-gray-300 text-gray-600 hover:bg-gray-100';
-            document.getElementById('btn-rep-tahsin').className = tab === 'tahsin' ? 'px-4 py-1 rounded text-xs font-bold bg-mi-deep text-white' : 'px-4 py-1 rounded text-xs font-bold bg-white border border-gray-300 text-gray-600 hover:bg-gray-100';
             
+            // UI Update Tab Buttons
+            const btnSiswa = document.getElementById('btn-rep-siswa');
+            const btnKelas = document.getElementById('btn-rep-kelas');
+            const btnTahsin = document.getElementById('btn-rep-tahsin');
+
+            if (btnSiswa) btnSiswa.className = tab === 'siswa' ? 'px-4 py-2 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-mi-deep bg-mi-mint text-mi-deep rounded-t-lg flex items-center gap-2 shadow-[0_-2px_4px_rgba(0,0,0,0.02)]' : 'px-4 py-2 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-t-lg flex items-center gap-2';
+            if (btnKelas) btnKelas.className = tab === 'kelas' ? 'px-4 py-2 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-mi-deep bg-mi-mint text-mi-deep rounded-t-lg flex items-center gap-2 shadow-[0_-2px_4px_rgba(0,0,0,0.02)]' : 'px-4 py-2 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-t-lg flex items-center gap-2';
+            if (btnTahsin) btnTahsin.className = tab === 'tahsin' ? 'px-4 py-2 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-mi-deep bg-mi-mint text-mi-deep rounded-t-lg flex items-center gap-2 shadow-[0_-2px_4px_rgba(0,0,0,0.02)]' : 'px-4 py-2 text-xs font-bold whitespace-nowrap transition-all border-b-2 border-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-t-lg flex items-center gap-2';
+            
+            // Toggle Tables Visibility
             document.getElementById('table-rep-siswa').classList.toggle('hidden', tab !== 'siswa');
             document.getElementById('table-rep-kelas').classList.toggle('hidden', tab !== 'kelas');
             document.getElementById('table-rep-tahsin').classList.toggle('hidden', tab !== 'tahsin');
+            
             renderAdminRepTable();
         }
 
@@ -4294,6 +4500,22 @@
             let total = document.querySelectorAll('.cb-poin-siswa').length;
             let checked = document.querySelectorAll('.cb-poin-siswa:checked').length;
             document.getElementById('ip-check-all').checked = (total === checked && total > 0);
+        }
+
+        function terapkanPoinMassal() {
+            let val = document.getElementById('ip-poin').value;
+            let checkboxes = document.querySelectorAll('.cb-poin-siswa');
+            
+            if(checkboxes.length === 0) return Swal.fire('Peringatan', 'Tidak ada data siswa untuk disetel.', 'warning');
+            
+            checkboxes.forEach(cb => {
+                let nis = cb.value;
+                document.getElementById(`poin-val-${nis}`).value = val;
+                cb.checked = true; // Auto select them
+            });
+            
+            checkPoinSelection();
+            Swal.fire({toast:true, position:'top-end', icon:'success', title:'Nilai Poin Diterapkan', showConfirmButton:false, timer:1500});
         }
 
         function simpanInputPoinMassal() {

@@ -706,20 +706,21 @@
                     <!-- MENU: DATA SISWA -->
                     <div id="admin-menu-siswa" class="admin-content-section hidden flex flex-col h-full">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
-                            <div class="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <div class="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shrink-0">
                                 <div class="flex gap-2 w-full sm:w-auto">
-                                    <input type="text" id="adm-search-siswa" oninput="renderTableAdminSiswa()" placeholder="Cari NIS/Nama..." class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs w-full sm:w-48 focus:outline-none focus:border-mi-deep">
-                                    <select id="adm-filter-kelas-siswa" onchange="renderTableAdminSiswa()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
+                                    <input type="text" id="adm-search-siswa" oninput="appState.admSiswaPage = 1; renderTableAdminSiswa()" placeholder="Cari NIS/Nama..." class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs w-full sm:w-48 focus:outline-none focus:border-mi-deep">
+                                    <select id="adm-filter-kelas-siswa" onchange="appState.admSiswaPage = 1; renderTableAdminSiswa()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-mi-deep">
                                         <option value="all">Semua Kelas</option>
                                     </select>
                                 </div>
-                                <div class="flex gap-2 w-full sm:w-auto">
-                                    <span class="text-xs font-bold text-gray-500 py-1.5 mr-2" id="adm-siswa-count">Total: 0</span>
-                                    <button onclick="openModalAdmSiswa('add')" class="flex-1 sm:flex-none px-3 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors"><i class="fa-solid fa-plus mr-1"></i> Tambah</button>
+                                <div class="flex gap-2 w-full sm:w-auto overflow-x-auto hide-scrollbar items-center">
+                                    <button onclick="exportMasterSiswaToExcel()" class="px-2 py-1.5 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                                    <button onclick="exportTableTo('table-adm-siswa', 'Master Data Siswa', 'pdf')" class="px-2 py-1.5 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                                    <button onclick="openModalAdmSiswa('add')" class="flex-1 sm:flex-none px-3 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors whitespace-nowrap ml-1"><i class="fa-solid fa-plus mr-1"></i> Tambah</button>
                                 </div>
                             </div>
                             <div class="overflow-auto flex-grow relative">
-                                <table class="min-w-full divide-y divide-gray-200">
+                                <table class="min-w-full divide-y divide-gray-200" id="table-adm-siswa">
                                     <thead class="bg-gray-50 sticky top-0 z-10">
                                         <tr>
                                             <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
@@ -733,18 +734,40 @@
                                     <tbody id="tbody-adm-siswa" class="bg-white divide-y divide-gray-200"></tbody>
                                 </table>
                             </div>
+                            <div class="p-3 bg-gray-50 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-3 shrink-0 rounded-b-xl">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold text-gray-600">Tampilkan:</span>
+                                    <select id="adm-siswa-limit" onchange="changeLimitAdmSiswa(this.value)" class="border border-gray-300 rounded text-xs py-1 px-2 focus:outline-none focus:border-mi-deep bg-white">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50" selected>50</option>
+                                        <option value="100">100</option>
+                                        <option value="all">Semua</option>
+                                    </select>
+                                </div>
+                                <span class="text-xs font-bold text-gray-500" id="adm-siswa-page-info">Menampilkan 0-0 dari 0 data</span>
+                                <div class="flex border border-gray-300 rounded overflow-hidden shadow-sm">
+                                    <button onclick="changePageAdmSiswa(-1)" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 border-r border-gray-300 transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                    <span id="adm-siswa-page-number" class="px-4 py-1.5 bg-gray-50 text-xs font-bold text-mi-deep flex items-center justify-center min-w-[40px]">1</span>
+                                    <button onclick="changePageAdmSiswa(1)" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 border-l border-gray-300 transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- MENU: KELAS -->
                     <div id="admin-menu-kelas" class="admin-content-section hidden">
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-                            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                            <div class="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                                 <h3 class="text-sm font-bold text-gray-800">Daftar Kelas (Final List)</h3>
-                                <button onclick="openModalAdmKelas('add')" class="px-3 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors"><i class="fa-solid fa-plus mr-1"></i> Tambah Kelas</button>
+                                <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar">
+                                    <button onclick="exportTableTo('table-adm-kelas', 'Master Data Kelas', 'excel')" class="px-2 py-1.5 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                                    <button onclick="exportTableTo('table-adm-kelas', 'Master Data Kelas', 'pdf')" class="px-2 py-1.5 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                                    <button onclick="openModalAdmKelas('add')" class="px-3 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors whitespace-nowrap ml-1"><i class="fa-solid fa-plus mr-1"></i> Tambah Kelas</button>
+                                </div>
                             </div>
                             <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
+                                <table class="min-w-full divide-y divide-gray-200" id="table-adm-kelas">
                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
@@ -765,10 +788,14 @@
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
                             <div class="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                                 <h3 class="text-sm font-bold text-gray-800"><i class="fa-solid fa-book-quran text-mi-emerald mr-2"></i> Master Kelompok Tahsin</h3>
-                                <button onclick="openModalAdmTahsin('add')" class="px-3 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors"><i class="fa-solid fa-plus mr-1"></i> Tambah Kelompok</button>
+                                <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar">
+                                    <button onclick="exportTableTo('table-adm-tahsin', 'Master Kelompok Tahsin', 'excel')" class="px-2 py-1.5 bg-accent-blue hover:bg-blue-100 text-accent-blueTxt rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                                    <button onclick="exportTableTo('table-adm-tahsin', 'Master Kelompok Tahsin', 'pdf')" class="px-2 py-1.5 bg-accent-rose hover:bg-rose-100 text-accent-roseTxt rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                                    <button onclick="openModalAdmTahsin('add')" class="px-3 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors whitespace-nowrap ml-1"><i class="fa-solid fa-plus mr-1"></i> Tambah Kelompok</button>
+                                </div>
                             </div>
                             <div class="overflow-auto flex-grow relative">
-                                <table class="min-w-full divide-y divide-gray-200">
+                                <table class="min-w-full divide-y divide-gray-200" id="table-adm-tahsin">
                                     <thead class="bg-gray-50 sticky top-0 z-10">
                                         <tr>
                                             <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
@@ -924,8 +951,8 @@
                     </div>
 
                     <!-- MENU: INPUT POIN -->
-                    <div id="admin-menu-input-poin" class="admin-content-section hidden flex flex-col h-full">
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
+                    <div id="admin-menu-input-poin" class="admin-content-section hidden">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col">
                             <div class="p-4 border-b border-gray-200 bg-gray-50 flex flex-col gap-4">
                                 <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg flex items-start gap-3">
                                     <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
@@ -949,6 +976,95 @@
                                             <button onclick="terapkanPoinMassal()" class="px-3 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald transition-colors whitespace-nowrap shadow-sm">Terapkan</button>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Content Area -->
+                            <div class="overflow-x-auto w-full bg-white border-b border-gray-200">
+                                <table class="min-w-full divide-y divide-gray-200" id="table-input-poin">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left w-10">
+                                                <input type="checkbox" id="ip-check-all" onchange="toggleCheckAllPoin(this)" class="w-4 h-4 text-mi-deep rounded border-gray-300 focus:ring-mi-deep cursor-pointer">
+                                            </th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase w-12">No</th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">NIS</th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Nama Siswa</th>
+                                            <th class="px-4 py-3 text-left text-[10px] font-bold text-gray-500 uppercase">Kelas</th>
+                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-24 whitespace-nowrap">Poin</th>
+                                            <th class="px-4 py-3 text-center text-[10px] font-bold text-gray-500 uppercase w-32 whitespace-nowrap">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-input-poin" class="divide-y divide-gray-100">
+                                        <tr><td colspan="7" class="px-4 py-8 text-sm text-center text-gray-500">Pilih tanggal terlebih dahulu untuk memuat data siswa.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Footer Input Poin -->
+                            <div class="p-4 bg-gray-50 flex flex-col md:flex-row justify-between items-center gap-4 rounded-b-xl">
+                                <div class="flex items-center gap-2 w-full md:w-auto">
+                                    <span class="text-[10px] font-bold text-gray-600">Tampilkan:</span>
+                                    <select id="ip-limit" onchange="changeLimitIp(this.value)" class="border border-gray-300 rounded-lg text-xs py-1 px-2 focus:outline-none focus:border-mi-deep bg-white">
+                                        <option value="10">10</option>
+                                        <option value="25" selected>25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="all">Semua</option>
+                                    </select>
+                                    <span class="text-xs font-bold text-gray-500 ml-2 whitespace-nowrap" id="ip-count-siswa">Menunggu pemilihan tanggal...</span>
+                                </div>
+                                
+                                <div class="flex border border-gray-300 rounded overflow-hidden shadow-sm hidden w-full md:w-auto justify-center" id="ip-pagination">
+                                    <button onclick="changePageIp(-1)" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 border-r border-gray-300 transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                    <span id="ip-page-number" class="px-4 py-1.5 bg-gray-50 text-xs font-bold text-mi-deep flex items-center justify-center min-w-[40px]">1</span>
+                                    <button onclick="changePageIp(1)" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 border-l border-gray-300 transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                </div>
+                                
+                                <button id="btn-simpan-poin" onclick="simpanInputPoinMassal()" disabled class="w-full md:w-auto px-6 py-2 bg-mi-deep text-white font-bold rounded-lg hover:bg-mi-emerald transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap">
+                                    <i class="fa-solid fa-save mr-1"></i> Simpan Poin
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MENU: REKAP POIN -->
+                    <div id="admin-menu-rekap-poin" class="admin-content-section hidden flex flex-col h-full">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
+                            <!-- Filter Section -->
+                            <div class="p-4 border-b border-gray-200 bg-gray-50 flex flex-col gap-3 shrink-0">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-1">
+                                    <h3 class="text-sm font-bold text-gray-800 flex items-center"><i class="fa-solid fa-filter text-mi-emerald mr-2"></i>Filter Rekap Poin</h3>
+                                    <div class="flex gap-2 w-full sm:w-auto">
+                                        <button onclick="resetFilterRekapPoin()" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 rounded-lg text-xs font-bold hover:bg-gray-50 shadow-sm transition-colors"><i class="fa-solid fa-rotate-left mr-1"></i> Reset</button>
+                                        <button onclick="refreshFilterRekapPoin()" class="px-3 py-1.5 bg-mi-deep text-white rounded-lg text-xs font-bold hover:bg-mi-emerald shadow-sm transition-colors"><i class="fa-solid fa-rotate mr-1"></i> Refresh</button>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Mulai Tanggal</label><input type="date" id="rp-start" onchange="applyFilterRekapPoin()" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep"></div>
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Sampai Tanggal</label><input type="date" id="rp-end" onchange="applyFilterRekapPoin()" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep"></div>
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Kelas</label><select id="rp-kelas" onchange="applyFilterRekapPoin()" class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep"><option value="all">Semua Kelas</option></select></div>
+                                    <div><label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Pencarian</label><input type="text" id="rp-search" oninput="applyFilterRekapPoin()" placeholder="Nama/NIS/Pelanggaran..." class="w-full border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-mi-deep"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Summary Cards -->
+                            <div class="px-4 py-3 bg-white shrink-0 grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div class="bg-gray-50 border border-gray-100 rounded-lg p-2 text-center shadow-sm">
+                                    <div class="text-[9px] font-bold text-gray-500 uppercase">Siswa Terlibat</div>
+                                    <div class="text-lg font-bold text-blue-700" id="rp-sum-siswa">0</div>
+                                </div>
+                                <div class="bg-gray-50 border border-gray-100 rounded-lg p-2 text-center shadow-sm">
+                                    <div class="text-[9px] font-bold text-gray-500 uppercase">Kelas Terlibat</div>
+                                    <div class="text-lg font-bold text-gray-800" id="rp-sum-kelas">0</div>
+                                </div>
+                                <div class="bg-gray-50 border border-gray-100 rounded-lg p-2 text-center shadow-sm">
+                                    <div class="text-[9px] font-bold text-amber-600 uppercase">Total Pelanggaran</div>
+                                    <div class="text-lg font-bold text-amber-700" id="rp-sum-pelanggaran">0</div>
+                                </div>
+                                <div class="bg-rose-50 border border-rose-100 rounded-lg p-2 text-center shadow-sm">
+                                    <div class="text-[9px] font-bold text-rose-600 uppercase">Total Akumulasi Poin</div>
+                                    <div class="text-lg font-bold text-rose-700" id="rp-sum-poin">0</div>
                                 </div>
                             </div>
 
@@ -987,7 +1103,7 @@
                             </div>
 
                             <!-- Content Area -->
-                            <div class="overflow-auto flex-grow relative bg-white">
+                            <div class="overflow-auto flex-grow relative bg-white border-b border-gray-200">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead class="bg-gray-50 sticky top-0 z-10 shadow-sm" id="thead-rekap-poin">
                                         <!-- Header injected via JS based on active tab -->
@@ -999,7 +1115,7 @@
                             </div>
 
                             <!-- Pagination Footer -->
-                            <div class="p-3 border-t border-gray-200 bg-gray-50 flex justify-between items-center shrink-0">
+                            <div class="p-3 bg-gray-50 flex justify-between items-center shrink-0">
                                 <span class="text-xs font-bold text-gray-500" id="rp-page-info">Menampilkan 0-0 dari 0 data</span>
                                 <div class="flex border border-gray-300 rounded overflow-hidden shadow-sm">
                                     <button onclick="changeRpPage(-1)" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 transition-colors border-r border-gray-300"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
@@ -1908,8 +2024,11 @@
             admSiswaPage: 1, admSiswaLimit: 50, admSiswaSearch: '', admSiswaKelas: 'all',
             admFpPage: 1, admFpLimit: 20, admFpSearch: '', admFpKelas: 'all', admFpDate: '',
             admRepStats: null, // Holds stats for admin rekap laporan
-            activeRekapPoinTab: 'siswa', // 'riwayat' | 'siswa' | 'kelas'
+            activeRekapPoinTab: 'riwayat', // 'riwayat' | 'harian' | 'siswa' | 'kelas'
             
+            // Input Poin
+            ip: { page: 1, limit: 25, data: [], draft: {} },
+
             importBuffer: [],
             importValidCount: 0,
             importInvalidCount: 0
@@ -2150,16 +2269,74 @@
         // ==========================================
         // EXPORT GENERIC UNTUK SEMUA MODAL DETAIL
         // ==========================================
+        
+        function exportMasterSiswaToExcel() {
+            if(db.students.length === 0) return Swal.fire('Info', 'Tidak ada data siswa', 'info');
+            
+            // Header Ekspor (Detail Penuh)
+            const cols = [
+                "Siswa ID", "NISN", "NIS", "NIPD", "NIK", "Nama Lengkap", "Nama Panggilan", "Jenis Kelamin",
+                "Tempat Lahir", "Tanggal Lahir", "Kelas", "Kelompok Tahsin", 
+                "Alamat", "RT", "RW", "Desa/Kelurahan", "Kecamatan", "Kabupaten/Kota", "Provinsi", "Kode Pos", "HP Siswa",
+                "Nama Ayah", "Status Ayah", "HP Ayah", "Nama Ibu", "Status Ibu", "HP Ibu",
+                "Status Akun Belajar", "Username Belajar ID", "Password Belajar ID"
+            ];
+
+            let dataToExport = db.students;
+            
+            // Terapkan filter yang sedang aktif di UI
+            let q = document.getElementById('adm-search-siswa').value.toLowerCase();
+            let k = document.getElementById('adm-filter-kelas-siswa').value;
+            dataToExport = db.students.filter(s => {
+                let mK = k === 'all' || s.kelas === k;
+                let mS = q === '' || s.nama.toLowerCase().includes(q) || s.nis.includes(q);
+                return mK && mS;
+            });
+
+            if (dataToExport.length === 0) return Swal.fire('Info', 'Tidak ada data siswa yang sesuai filter', 'info');
+
+            const dataset = dataToExport.map(s => {
+                let t = getTahsinInfo(s.kelompokTahsinId);
+                return [
+                    s.siswaId || '', s.nisn || '', s.nis || '', s.nipd || '', s.nik || '', s.nama || '', s.panggilan || '', s.jk || '',
+                    s.tempatLahir || '', s.tanggalLahir || '', s.kelas || '', t ? t.namaKelompok : '',
+                    s.alamat || '', s.rt || '', s.rw || '', s.desa || '', s.kec || '', s.kab || '', s.prov || '', s.kodePos || '', s.hpSiswa || '',
+                    s.namaAyah || '', s.statusAyah || '', s.hpAyah || '', s.namaIbu || '', s.statusIbu || '', s.hpIbu || '',
+                    s.statusBelajar || '', s.userBelajar || '', s.passBelajar || ''
+                ];
+            });
+
+            const exportObj = dataset.map(row => {
+                let obj = {};
+                cols.forEach((col, i) => { obj[col] = row[i]; });
+                return obj;
+            });
+            
+            const ws = XLSX.utils.json_to_sheet(exportObj);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Master Data Siswa");
+            XLSX.writeFile(wb, `Master-Data-Siswa-${getToday()}.xlsx`);
+        }
+
         function exportTableTo(tableId, reportTitle, type) {
             let table = document.getElementById(tableId);
             if(!table) return Swal.fire('Error', 'Tabel tidak ditemukan', 'error');
 
             let cols = [];
             let dataset = [];
+            let skipIndices = []; // Untuk mengabaikan kolom "Aksi" atau kolom checkbox
 
-            // Parse Headers (Lewati kolom dengan class khusus aksi/checkbox jika diperlukan)
+            // Parse Headers
             let ths = table.querySelectorAll('thead th');
-            ths.forEach(th => cols.push(th.innerText.trim()));
+            ths.forEach((th, i) => {
+                let text = th.innerText.trim();
+                // Lewati kolom Aksi atau kolom tanpa teks (biasanya checkbox)
+                if(text.toLowerCase() === 'aksi' || text === '') {
+                    skipIndices.push(i);
+                } else {
+                    cols.push(text);
+                }
+            });
 
             // Parse Body
             let trs = table.querySelectorAll('tbody tr');
@@ -2169,7 +2346,17 @@
                 // skip if it's an empty message
                 if(tds.length === 1 && tds[0].colSpan > 1) return; 
                 
-                tds.forEach(td => row.push(td.innerText.trim()));
+                tds.forEach((td, i) => {
+                    if(!skipIndices.includes(i)) {
+                        // Jika dalam mode Input Poin, ambil nilai dari tag input
+                        let input = td.querySelector('input[type="number"], input[type="text"]');
+                        if (input) {
+                            row.push(input.value);
+                        } else {
+                            row.push(td.innerText.trim());
+                        }
+                    }
+                });
                 if(row.length > 0) dataset.push(row);
             });
 
@@ -3506,14 +3693,22 @@
                 return mK && mS;
             });
             
-            document.getElementById('adm-siswa-count').innerText = `Total: ${data.length}`;
+            let totalData = data.length;
+            let limit = appState.admSiswaLimit === 'all' ? totalData : parseInt(appState.admSiswaLimit);
+            let maxPage = Math.ceil(totalData / limit);
+            if(appState.admSiswaPage > maxPage) appState.admSiswaPage = maxPage || 1;
+
+            let start = (appState.admSiswaPage - 1) * limit;
+            let end = start + limit;
+            let pageData = data.slice(start, end);
+
             const tbody = document.getElementById('tbody-adm-siswa');
-            tbody.innerHTML = data.slice(0, 50).map((s, i) => {
+            tbody.innerHTML = pageData.map((s, i) => {
                 let t = getTahsinInfo(s.kelompokTahsinId);
                 let tName = t ? t.namaKelompok : '<span class="text-red-500 italic">Belum diatur</span>';
                 return `
                 <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-2 text-xs text-gray-500">${i+1}</td>
+                    <td class="px-4 py-2 text-xs text-gray-500">${start + i + 1}</td>
                     <td class="px-4 py-2 text-xs font-mono font-bold cursor-pointer text-mi-deep hover:underline" onclick="openModalAdmSiswa('detail', '${s.nis}')">${s.nisn || s.nis}</td>
                     <td class="px-4 py-2 text-xs font-bold text-gray-800">${s.nama}</td>
                     <td class="px-4 py-2 text-xs text-gray-600">${s.kelas}</td>
@@ -3525,8 +3720,36 @@
                     </td>
                 </tr>
             `}).join('');
-            if(data.length > 50) tbody.innerHTML += `<tr><td colspan="6" class="px-4 py-2 text-xs text-center text-gray-500 italic">Menampilkan 50 data teratas. Gunakan pencarian.</td></tr>`;
+            
             if(data.length === 0) tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-4 text-xs text-center text-gray-500">Data tidak ditemukan</td></tr>`;
+
+            let infoEl = document.getElementById('adm-siswa-page-info');
+            if(infoEl) infoEl.innerText = `Menampilkan ${totalData === 0 ? 0 : start + 1}-${Math.min(end, totalData)} dari ${totalData} data`;
+            let pageEl = document.getElementById('adm-siswa-page-number');
+            if(pageEl) pageEl.innerText = appState.admSiswaPage;
+        }
+
+        function changeLimitAdmSiswa(val) {
+            appState.admSiswaLimit = val;
+            appState.admSiswaPage = 1;
+            renderTableAdminSiswa();
+        }
+
+        function changePageAdmSiswa(dir) {
+            let limit = appState.admSiswaLimit === 'all' ? db.students.length : parseInt(appState.admSiswaLimit);
+            
+            let filteredCount = db.students.filter(s => {
+                let mK = appState.admSiswaKelas === 'all' || s.kelas === appState.admSiswaKelas;
+                let mS = appState.admSiswaSearch === '' || s.nama.toLowerCase().includes(appState.admSiswaSearch) || s.nis.includes(appState.admSiswaSearch);
+                return mK && mS;
+            }).length;
+            
+            let maxPage = Math.ceil(filteredCount / limit);
+            
+            appState.admSiswaPage += dir;
+            if (appState.admSiswaPage < 1) appState.admSiswaPage = 1;
+            if (appState.admSiswaPage > maxPage) appState.admSiswaPage = maxPage || 1;
+            renderTableAdminSiswa();
         }
 
         function openModalAdmSiswa(mode, nis = '') { 
@@ -4437,105 +4660,161 @@
         // 8.5. KEDISIPLINAN: INPUT & REKAP POIN
         // ==========================================
         
-        function loadSiswaForPoin() {
+        function loadSiswaForPoin(reset = true) {
             let tgl = document.getElementById('ip-tgl').value;
-            let jenis = document.getElementById('ip-jenis').value;
-            let defPoin = document.getElementById('ip-poin').value;
-            const tbody = document.getElementById('tbody-input-poin');
-            const btnSave = document.getElementById('btn-simpan-poin');
-            const checkAll = document.getElementById('ip-check-all');
             
-            checkAll.checked = false;
+            if(reset) {
+                appState.ip.page = 1;
+                appState.ip.draft = {};
+                document.getElementById('ip-check-all').checked = false;
+            }
 
             if(!tgl) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-sm text-center text-gray-500">Pilih tanggal terlebih dahulu untuk memuat data siswa.</td></tr>`;
+                document.getElementById('tbody-input-poin').innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-sm text-center text-gray-500">Pilih tanggal terlebih dahulu untuk memuat data siswa.</td></tr>`;
                 document.getElementById('ip-count-siswa').innerText = `Menunggu pemilihan tanggal...`;
-                btnSave.disabled = true;
+                document.getElementById('ip-pagination').classList.add('hidden');
+                document.getElementById('btn-simpan-poin').disabled = true;
                 return;
             }
 
             // Dapatkan siswa yang ada di BFP pada tanggal tersebut
             let bfpOnDate = db.bfp.filter(r => r.tanggal === tgl);
-
-            // Urutkan berdasarkan nama
             bfpOnDate.sort((a,b) => a.nama.localeCompare(b.nama));
+            
+            appState.ip.data = bfpOnDate;
+            
+            // Set limit to match dropdown
+            let val = document.getElementById('ip-limit').value;
+            appState.ip.limit = val === 'all' ? bfpOnDate.length : parseInt(val);
 
-            document.getElementById('ip-count-siswa').innerText = `Tersedia: ${bfpOnDate.length} Siswa (Data BFP)`;
+            renderTabelInputPoin();
+        }
 
-            if (bfpOnDate.length === 0) {
+        function renderTabelInputPoin() {
+            let tgl = document.getElementById('ip-tgl').value;
+            let jenis = document.getElementById('ip-jenis').value;
+            let defPoin = parseInt(document.getElementById('ip-poin').value) || -5;
+            const tbody = document.getElementById('tbody-input-poin');
+            const btnSave = document.getElementById('btn-simpan-poin');
+            
+            let totalData = appState.ip.data.length;
+
+            if (totalData === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-sm text-center text-gray-500">Tidak ada catatan Belum Fingerprint pada tanggal ini.</td></tr>`;
+                document.getElementById('ip-count-siswa').innerText = `Tersedia: 0 Siswa`;
+                document.getElementById('ip-pagination').classList.add('hidden');
                 btnSave.disabled = true;
                 return;
             }
 
             btnSave.disabled = false;
-            tbody.innerHTML = bfpOnDate.map((s, i) => {
-                let existingPoint = db.poin.find(p => p.tanggal === tgl && p.nis === s.nis && p.pelanggaran === jenis);
-                let currentPoin = existingPoint ? existingPoint.poin : defPoin;
-                let statusBadge = existingPoint ? `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold border border-blue-200">Sudah Input</span>` : `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold border border-gray-200">Belum Input</span>`;
+            document.getElementById('ip-pagination').classList.remove('hidden');
+
+            let limit = appState.ip.limit === 'all' ? totalData : parseInt(appState.ip.limit);
+            let maxPage = Math.ceil(totalData / limit);
+            if(appState.ip.page > maxPage) appState.ip.page = maxPage || 1;
+
+            let start = (appState.ip.page - 1) * limit;
+            let end = start + limit;
+            let pageData = appState.ip.data.slice(start, end);
+
+            // Inisialisasi draft untuk data di halaman ini jika belum ada
+            pageData.forEach(s => {
+                if(!appState.ip.draft[s.nis]) {
+                    let existingPoint = db.poin.find(p => p.tanggal === tgl && p.nis === s.nis && p.pelanggaran === jenis);
+                    appState.ip.draft[s.nis] = {
+                        checked: false,
+                        poin: existingPoint ? existingPoint.poin : defPoin,
+                        isExisting: !!existingPoint
+                    };
+                }
+            });
+
+            tbody.innerHTML = pageData.map((s, i) => {
+                let draft = appState.ip.draft[s.nis];
+                let statusBadge = draft.isExisting ? `<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold border border-blue-200 whitespace-nowrap">Sudah Input</span>` : `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold border border-gray-200 whitespace-nowrap">Belum Input</span>`;
                 
                 return `
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="px-4 py-2">
-                        <input type="checkbox" value="${s.nis}" class="cb-poin-siswa w-4 h-4 text-mi-deep rounded border-gray-300 focus:ring-mi-deep cursor-pointer" onchange="checkPoinSelection()">
+                        <input type="checkbox" value="${s.nis}" class="cb-poin-siswa w-4 h-4 text-mi-deep rounded border-gray-300 focus:ring-mi-deep cursor-pointer" ${draft.checked ? 'checked' : ''} onchange="updateDraftIp('${s.nis}', this.checked, document.getElementById('poin-val-${s.nis}').value)">
                     </td>
-                    <td class="px-4 py-2 text-xs text-gray-500">${i+1}</td>
+                    <td class="px-4 py-2 text-xs text-gray-500">${start + i + 1}</td>
                     <td class="px-4 py-2 text-xs font-mono font-bold">${s.nis}</td>
                     <td class="px-4 py-2 text-xs font-bold text-gray-800">${s.nama}</td>
                     <td class="px-4 py-2 text-xs text-gray-600">${s.kelas}</td>
-                    <td class="px-4 py-2 text-center whitespace-nowrap">
-                        <input type="number" id="poin-val-${s.nis}" value="${currentPoin}" class="w-16 border border-gray-300 rounded px-2 py-1 text-xs text-center font-bold text-rose-600 focus:outline-none focus:border-mi-deep" onchange="document.querySelector('.cb-poin-siswa[value=\\'${s.nis}\\']').checked = true; checkPoinSelection();">
+                    <td class="px-4 py-2 text-center whitespace-nowrap w-24">
+                        <input type="number" id="poin-val-${s.nis}" value="${draft.poin}" class="w-16 border border-gray-300 rounded px-2 py-1 text-xs text-center font-bold text-rose-600 focus:outline-none focus:border-mi-deep" onchange="updateDraftIp('${s.nis}', true, this.value); document.querySelector('.cb-poin-siswa[value=\\'${s.nis}\\']').checked = true;">
                     </td>
-                    <td class="px-4 py-2 text-center whitespace-nowrap">${statusBadge}</td>
+                    <td class="px-4 py-2 text-center whitespace-nowrap w-32">${statusBadge}</td>
                 </tr>
             `}).join('');
+            
+            document.getElementById('ip-count-siswa').innerText = `Tersedia: ${totalData} Siswa | Menampilkan ${start+1}-${Math.min(end, totalData)}`;
+            document.getElementById('ip-page-number').innerText = appState.ip.page;
+
+            checkPoinSelection();
+        }
+
+        function updateDraftIp(nis, isChecked, poinVal) {
+            if(appState.ip.draft[nis]) {
+                appState.ip.draft[nis].checked = isChecked;
+                appState.ip.draft[nis].poin = parseInt(poinVal) || 0;
+            }
+            checkPoinSelection();
         }
 
         function toggleCheckAllPoin(source) {
             let checkboxes = document.querySelectorAll('.cb-poin-siswa');
-            checkboxes.forEach(cb => cb.checked = source.checked);
+            checkboxes.forEach(cb => {
+                cb.checked = source.checked;
+                updateDraftIp(cb.value, source.checked, document.getElementById(`poin-val-${cb.value}`).value);
+            });
         }
 
         function checkPoinSelection() {
-            let total = document.querySelectorAll('.cb-poin-siswa').length;
+            let checkboxes = document.querySelectorAll('.cb-poin-siswa');
+            let total = checkboxes.length;
             let checked = document.querySelectorAll('.cb-poin-siswa:checked').length;
             document.getElementById('ip-check-all').checked = (total === checked && total > 0);
         }
 
         function terapkanPoinMassal() {
-            let val = document.getElementById('ip-poin').value;
-            let checkboxes = document.querySelectorAll('.cb-poin-siswa');
+            let val = parseInt(document.getElementById('ip-poin').value) || -5;
             
-            if(checkboxes.length === 0) return Swal.fire('Peringatan', 'Tidak ada data siswa untuk disetel.', 'warning');
-            
-            checkboxes.forEach(cb => {
-                let nis = cb.value;
-                document.getElementById(`poin-val-${nis}`).value = val;
-                cb.checked = true; // Auto select them
+            let updatedCount = 0;
+            Object.keys(appState.ip.draft).forEach(nis => {
+                if(appState.ip.draft[nis].checked) {
+                    appState.ip.draft[nis].poin = val;
+                    updatedCount++;
+                }
             });
             
-            checkPoinSelection();
-            Swal.fire({toast:true, position:'top-end', icon:'success', title:'Nilai Poin Diterapkan', showConfirmButton:false, timer:1500});
+            if(updatedCount === 0) return Swal.fire('Peringatan', 'Tidak ada data siswa yang dipilih. Centang minimal satu siswa.', 'warning');
+            
+            Swal.fire({toast:true, position:'top-end', icon:'success', title:`Poin ${val} diterapkan ke ${updatedCount} siswa`, showConfirmButton:false, timer:1500});
+            renderTabelInputPoin(); // Re-render to reflect changes visually
         }
 
         function simpanInputPoinMassal() {
             let tgl = document.getElementById('ip-tgl').value;
             let jenis = document.getElementById('ip-jenis').value;
 
-            let checkedCbs = document.querySelectorAll('.cb-poin-siswa:checked');
-            if(checkedCbs.length === 0) return Swal.fire('Peringatan', 'Silakan pilih minimal satu siswa dengan mencentang kotak yang tersedia.', 'warning');
+            let checkedNis = Object.keys(appState.ip.draft).filter(nis => appState.ip.draft[nis].checked);
+            
+            if(checkedNis.length === 0) return Swal.fire('Peringatan', 'Silakan pilih minimal satu siswa dengan mencentang kotak yang tersedia.', 'warning');
 
             Swal.fire({
                 title: 'Konfirmasi Simpan Poin',
-                text: `Anda akan menyimpan atau memperbarui poin untuk ${checkedCbs.length} siswa terpilih. Lanjutkan?`,
+                text: `Anda akan menyimpan atau memperbarui poin untuk ${checkedNis.length} siswa terpilih. Lanjutkan?`,
                 icon: 'question', showCancelButton: true, confirmButtonColor: '#124F47'
             }).then(res => {
                 if(res.isConfirmed) {
                     let successCount = 0;
                     let updateCount = 0;
-                    checkedCbs.forEach(cb => {
-                        let nis = cb.value;
-                        let poinVal = parseInt(document.getElementById(`poin-val-${nis}`).value) || 0;
+                    
+                    checkedNis.forEach(nis => {
+                        let poinVal = appState.ip.draft[nis].poin;
                         let s = db.students.find(x => x.nis === nis);
                         
                         if(s) {
@@ -4560,9 +4839,27 @@
 
                     saveData();
                     Swal.fire('Berhasil', `${successCount} poin disimpan, ${updateCount} poin diperbarui.`, 'success');
-                    loadSiswaForPoin(); // Refresh tabel
+                    loadSiswaForPoin(false); // Refresh tabel tanpa reset halaman
                 }
             });
+        }
+        
+        function changeLimitIp(val) {
+            appState.ip.limit = val;
+            appState.ip.page = 1;
+            renderTabelInputPoin();
+        }
+
+        function changePageIp(dir) {
+            let totalData = appState.ip.data.length;
+            let limit = appState.ip.limit === 'all' ? totalData : parseInt(appState.ip.limit);
+            let maxPage = Math.ceil(totalData / limit);
+            
+            appState.ip.page += dir;
+            if (appState.ip.page < 1) appState.ip.page = 1;
+            if (appState.ip.page > maxPage) appState.ip.page = maxPage || 1;
+            
+            renderTabelInputPoin();
         }
 
         // ==========================================
